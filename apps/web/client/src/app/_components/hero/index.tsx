@@ -1,20 +1,28 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { vujahdayScript } from '../../fonts';
 import { Create } from './create';
 import { CreateError } from './create-error';
 import { HighDemand } from './high-demand';
-import { UnicornBackground } from './unicorn-background';
+// import { UnicornBackground } from './unicorn-background';
 
 export function Hero() {
     const [isMounted, setIsMounted] = useState(false);
     const [cardKey, setCardKey] = useState(0);
 
+    // Since UnicornBackground is disabled, manually trigger mounted state
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setIsMounted(true);
+        }, 100);
+        return () => clearTimeout(timer);
+    }, []);
+
     return (
         <div className="w-full h-full flex flex-col items-center justify-center gap-12 p-8 text-lg text-center relative">
-            <UnicornBackground setIsMounted={setIsMounted} />
+            {/* <UnicornBackground setIsMounted={setIsMounted} /> */}
             <div className="flex flex-col gap-3 items-center relative z-20 pt-4 pb-2">
                 <motion.h1
                     className="text-6xl font-light leading-tight text-center !leading-[0.9]"
