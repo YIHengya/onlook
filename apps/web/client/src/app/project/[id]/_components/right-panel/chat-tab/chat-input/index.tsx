@@ -7,6 +7,7 @@ import { EditorTabValue, type ImageMessageContext } from '@onlook/models';
 import { MessageContextType } from '@onlook/models/chat';
 import { Button } from '@onlook/ui/button';
 import { Icons } from '@onlook/ui/icons';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@onlook/ui/select';
 import { toast } from '@onlook/ui/sonner';
 import { Textarea } from '@onlook/ui/textarea';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@onlook/ui/tooltip';
@@ -28,6 +29,7 @@ export const ChatInput = observer(() => {
     const [isComposing, setIsComposing] = useState(false);
     const [actionTooltipOpen, setActionTooltipOpen] = useState(false);
     const [isDragging, setIsDragging] = useState(false);
+    const [selectedModel, setSelectedModel] = useState('claude-sonnet-4');
 
     const focusInput = () => {
         requestAnimationFrame(() => {
@@ -276,7 +278,7 @@ export const ChatInput = observer(() => {
                     onKeyDown={handleKeyDown}
                     onPaste={handlePaste}
                     onCompositionStart={() => setIsComposing(true)}
-                    onCompositionEnd={(e) => {
+                    onCompositionEnd={() => {
                         setIsComposing(false);
                     }}
                     onDragEnter={(e) => {
@@ -293,36 +295,81 @@ export const ChatInput = observer(() => {
                     }}
                 />
             </div>
-            <div className="flex flex-row w-full justify-between pt-2 pb-2 px-2">
+            <div className="flex flex-row w-full justify-between items-center pt-2 pb-2 px-2">
                 <ActionButtons disabled={disabled} handleImageEvent={handleImageEvent} />
-                {isWaiting ? (
-                    <Tooltip open={actionTooltipOpen} onOpenChange={setActionTooltipOpen}>
+
+                <div className="flex items-center gap-2">
+                    {/* AI Model Selector */}
+                    <Tooltip>
                         <TooltipTrigger asChild>
-                            <Button
-                                size={'icon'}
-                                variant={'secondary'}
-                                className="text-smallPlus w-fit h-full py-0.5 px-2.5 text-primary"
-                                onClick={() => {
-                                    setActionTooltipOpen(false);
-                                    stop();
-                                }}
-                            >
-                                <Icons.Stop />
-                            </Button>
+                            <Select value={selectedModel} onValueChange={setSelectedModel}>
+                                <SelectTrigger className="w-fit min-w-[120px] h-8 text-xs bg-transparent border-none hover:bg-background/50 text-foreground-tertiary hover:text-foreground-secondary transition-all duration-200 focus:ring-0 focus:ring-offset-0 shadow-none">
+                                    <Icons.Sparkles className="h-3 w-3 mr-1" />
+                                    <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent align="end" className="min-w-[160px]">
+                                    <SelectItem value="claude-sonnet-4">
+                                        <div className="flex items-center gap-2">
+                                            Claude Sonnet 4
+                                        </div>
+                                    </SelectItem>
+                                    <SelectItem value="claude-haiku">
+                                        <div className="flex items-center gap-2">
+                                            Claude Haiku
+                                        </div>
+                                    </SelectItem>
+                                    <SelectItem value="gpt-4">
+                                        <div className="flex items-center gap-2">
+                                            GPT-4
+                                        </div>
+                                    </SelectItem>
+                                    <SelectItem value="gpt-3.5-turbo">
+                                        <div className="flex items-center gap-2">
+                                            GPT-3.5 Turbo
+                                        </div>
+                                    </SelectItem>
+                                    <SelectItem value="gemini-pro">
+                                        <div className="flex items-center gap-2">
+                                            Gemini Pro
+                                        </div>
+                                    </SelectItem>
+                                </SelectContent>
+                            </Select>
                         </TooltipTrigger>
-                        <TooltipContent>{'Stop response'}</TooltipContent>
+                        <TooltipContent side="top" sideOffset={5}>
+                            Choose AI model
+                        </TooltipContent>
                     </Tooltip>
-                ) : (
-                    <Button
-                        size={'icon'}
-                        variant={'secondary'}
-                        className="text-smallPlus w-fit h-full py-0.5 px-2.5 text-primary"
-                        disabled={inputEmpty || status !== 'ready'}
-                        onClick={sendMessage}
-                    >
-                        <Icons.ArrowRight />
-                    </Button>
-                )}
+
+                    {isWaiting ? (
+                        <Tooltip open={actionTooltipOpen} onOpenChange={setActionTooltipOpen}>
+                            <TooltipTrigger asChild>
+                                <Button
+                                    size={'icon'}
+                                    variant={'secondary'}
+                                    className="text-smallPlus w-fit h-8 py-0.5 px-2.5 text-primary"
+                                    onClick={() => {
+                                        setActionTooltipOpen(false);
+                                        stop();
+                                    }}
+                                >
+                                    <Icons.Stop />
+                                </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>Stop response</TooltipContent>
+                        </Tooltip>
+                    ) : (
+                        <Button
+                            size={'icon'}
+                            variant={'secondary'}
+                            className="text-smallPlus w-fit h-8 py-0.5 px-2.5 text-primary"
+                            disabled={inputEmpty || disabled}
+                            onClick={sendMessage}
+                        >
+                            <Icons.ArrowRight />
+                        </Button>
+                    )}
+                </div>
             </div>
         </div>
     );
