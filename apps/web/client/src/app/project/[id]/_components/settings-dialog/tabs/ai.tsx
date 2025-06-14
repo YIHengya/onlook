@@ -4,41 +4,35 @@ import { Button } from '@onlook/ui/button';
 import { Input } from '@onlook/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@onlook/ui/select';
 import { Switch } from '@onlook/ui/switch';
+import { AVAILABLE_MODELS, LLMProvider, type ModelConfig } from '@onlook/models';
 import { useState, useEffect } from 'react';
 
 export const AITab = () => {
     const [showApiKey, setShowApiKey] = useState(false);
     const [provider, setProvider] = useState('openai');
     const [customModels, setCustomModels] = useState('');
-    const [selectedModel, setSelectedModel] = useState('');
+    const [selectedModel, setSelectedModel] = useState(() => {
+        // Default to the first available model
+        const defaultModel = AVAILABLE_MODELS.find(m => m.available);
+        return defaultModel?.id || '';
+    });
     const [enableCustomInterface, setEnableCustomInterface] = useState(true);
 
     // Debug log for enableCustomInterface state
     console.log('AITab render - enableCustomInterface:', enableCustomInterface);
 
     const providers = [
-        { value: 'openai', label: 'OpenAI' },
-        { value: 'anthropic', label: 'Anthropic (Claude)' },
-        { value: 'google', label: 'Google (Gemini)' },
+        { value: LLMProvider.OPENAI, label: 'OpenAI' },
+        { value: LLMProvider.ANTHROPIC, label: 'Anthropic (Claude)' },
+        { value: LLMProvider.GOOGLE, label: 'Google (Gemini)' },
         { value: 'azure', label: 'Azure OpenAI' },
         { value: 'custom', label: 'Custom Provider' }
     ];
 
-    const openaiModels = [
-        'gpt-4o',
-        'gpt-4o-mini',
-        'gpt-4-turbo',
-        'gpt-4',
-        'gpt-3.5-turbo'
-    ];
-
-    const anthropicModels = [
-        'claude-3-5-sonnet-20241022',
-        'claude-3-5-haiku-20241022',
-        'claude-3-opus-20240229',
-        'claude-3-sonnet-20240229',
-        'claude-3-haiku-20240307'
-    ];
+    // Get models by provider from AVAILABLE_MODELS
+    const getModelsByProvider = (provider: LLMProvider): ModelConfig[] => {
+        return AVAILABLE_MODELS.filter(model => model.provider === provider);
+    };
 
     const parseCustomModels = (modelsString: string): string[] => {
         return modelsString
@@ -51,9 +45,10 @@ export const AITab = () => {
     useEffect(() => {
         // Only reset if the current selected model is no longer available
         const customModelsList = parseCustomModels(customModels);
-        if (selectedModel && !openaiModels.includes(selectedModel) &&
-            !anthropicModels.includes(selectedModel) &&
-            !['gemini-pro', 'gemini-pro-vision'].includes(selectedModel) &&
+        const availableModelIds = AVAILABLE_MODELS.map(model => model.id);
+
+        if (selectedModel &&
+            !availableModelIds.includes(selectedModel) &&
             !customModelsList.includes(selectedModel)) {
             setSelectedModel('');
         }
@@ -189,36 +184,24 @@ export const AITab = () => {
                                 <SelectValue placeholder="选择模型" />
                             </SelectTrigger>
                             <SelectContent className="bg-gray-800 border-gray-600">
-                                {/* OpenAI Models */}
-                                {openaiModels.map((model) => (
+                                {/* Available Models */}
+                                {AVAILABLE_MODELS.map((model) => (
                                     <SelectItem
-                                        key={`openai-${model}`}
-                                        value={model}
+                                        key={model.id}
+                                        value={model.id}
+                                        disabled={!model.available}
                                         className="text-white hover:bg-gray-700"
                                     >
-                                        {model}
-                                    </SelectItem>
-                                ))}
-
-                                {/* Anthropic Models */}
-                                {anthropicModels.map((model) => (
-                                    <SelectItem
-                                        key={`anthropic-${model}`}
-                                        value={model}
-                                        className="text-white hover:bg-gray-700"
-                                    >
-                                        {model}
-                                    </SelectItem>
-                                ))}
-
-                                {/* Google Models */}
-                                {['gemini-pro', 'gemini-pro-vision'].map((model) => (
-                                    <SelectItem
-                                        key={`google-${model}`}
-                                        value={model}
-                                        className="text-white hover:bg-gray-700"
-                                    >
-                                        {model}
+                                        <div className="flex items-center gap-2">
+                                            <span className={model.available ? 'text-white' : 'text-gray-400'}>
+                                                {model.name}
+                                            </span>
+                                            {!model.available && (
+                                                <span className="text-xs text-gray-400">
+                                                    (Coming Soon)
+                                                </span>
+                                            )}
+                                        </div>
                                     </SelectItem>
                                 ))}
 
