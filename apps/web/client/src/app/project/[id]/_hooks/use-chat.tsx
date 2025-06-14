@@ -15,7 +15,7 @@ import type { Message, ToolCall } from 'ai';
 import { createContext, useContext } from 'react';
 import { z } from 'zod';
 
-type ExtendedUseChatHelpers = UseChatHelpers & { sendMessages: (messages: Message[], type: ChatType) => Promise<string | null | undefined> };
+type ExtendedUseChatHelpers = UseChatHelpers & { sendMessages: (messages: Message[], type: ChatType, selectedModel?: string) => Promise<string | null | undefined> };
 const ChatContext = createContext<ExtendedUseChatHelpers | null>(null);
 
 export function ChatProvider({ children }: { children: React.ReactNode }) {
@@ -35,11 +35,13 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
         },
     });
 
-    const sendMessages = async (messages: Message[], type: ChatType = ChatType.EDIT) => {
+    const sendMessages = async (messages: Message[], type: ChatType = ChatType.EDIT, selectedModel?: string) => {
+        console.log('sendMessages called with selectedModel:', selectedModel);
         chat.setMessages(messages);
         return chat.reload({
             body: {
                 chatType: type,
+                selectedModel: selectedModel || 'claude-sonnet-4',
             },
         });
     };

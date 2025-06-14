@@ -9,6 +9,8 @@ export const env = createEnv({
     server: {
         NODE_ENV: z.enum(['development', 'test', 'production']),
         ANTHROPIC_API_KEY: z.string(),
+        OPENAI_API_KEY: z.string().optional(),
+        OPENAI_BASE_URL: z.string().optional(),
         CSB_API_KEY: z.string(),
         SUPABASE_DATABASE_URL: z.string().url(),
         RESEND_API_KEY: z.string().optional(),
@@ -40,6 +42,8 @@ export const env = createEnv({
     runtimeEnv: {
         NODE_ENV: process.env.NODE_ENV,
         ANTHROPIC_API_KEY: process.env.ANTHROPIC_API_KEY,
+        OPENAI_API_KEY: process.env.OPENAI_API_KEY,
+        OPENAI_BASE_URL: process.env.OPENAI_BASE_URL,
         CSB_API_KEY: process.env.CSB_API_KEY,
         RESEND_API_KEY: process.env.RESEND_API_KEY,
         SUPABASE_DATABASE_URL: process.env.SUPABASE_DATABASE_URL,

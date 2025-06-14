@@ -3,7 +3,7 @@ import { useChatContext } from '@/app/project/[id]/_hooks/use-chat';
 import { useEditorEngine } from '@/components/store/editor';
 import { FOCUS_CHAT_INPUT_EVENT } from '@/components/store/editor/chat';
 import { transKeys } from '@/i18n/keys';
-import { EditorTabValue, type ImageMessageContext } from '@onlook/models';
+import { AVAILABLE_MODELS, EditorTabValue, type ImageMessageContext } from '@onlook/models';
 import { MessageContextType } from '@onlook/models/chat';
 import { Button } from '@onlook/ui/button';
 import { Icons } from '@onlook/ui/icons';
@@ -29,7 +29,11 @@ export const ChatInput = observer(() => {
     const [isComposing, setIsComposing] = useState(false);
     const [actionTooltipOpen, setActionTooltipOpen] = useState(false);
     const [isDragging, setIsDragging] = useState(false);
-    const [selectedModel, setSelectedModel] = useState('claude-sonnet-4');
+    const [selectedModel, setSelectedModel] = useState(() => {
+        // Default to the first available model
+        const defaultModel = AVAILABLE_MODELS.find(m => m.available);
+        return defaultModel?.id || 'claude-sonnet-4';
+    });
 
     const focusInput = () => {
         requestAnimationFrame(() => {
@@ -129,8 +133,9 @@ export const ChatInput = observer(() => {
             toast.error('Failed to send message. Please try again.');
             return;
         }
+        console.log('streamMessages', streamMessages);
 
-        sendMessages(streamMessages, ChatType.EDIT);
+        sendMessages(streamMessages, ChatType.EDIT, selectedModel);
         setInputValue('');
     }
 
@@ -308,31 +313,26 @@ export const ChatInput = observer(() => {
                                     <SelectValue />
                                 </SelectTrigger>
                                 <SelectContent align="end" className="min-w-[160px]">
-                                    <SelectItem value="claude-sonnet-4">
-                                        <div className="flex items-center gap-2">
-                                            Claude Sonnet 4
-                                        </div>
-                                    </SelectItem>
-                                    <SelectItem value="claude-haiku">
-                                        <div className="flex items-center gap-2">
-                                            Claude Haiku
-                                        </div>
-                                    </SelectItem>
-                                    <SelectItem value="gpt-4">
-                                        <div className="flex items-center gap-2">
-                                            GPT-4
-                                        </div>
-                                    </SelectItem>
-                                    <SelectItem value="gpt-3.5-turbo">
-                                        <div className="flex items-center gap-2">
-                                            GPT-3.5 Turbo
-                                        </div>
-                                    </SelectItem>
-                                    <SelectItem value="gemini-pro">
-                                        <div className="flex items-center gap-2">
-                                            Gemini Pro
-                                        </div>
-                                    </SelectItem>
+                                    {AVAILABLE_MODELS.map((model) => (
+                                        <SelectItem
+                                            key={model.id}
+                                            value={model.id}
+                                            disabled={!model.available}
+                                        >
+                                            <div className="flex items-center gap-2">
+                                                <span className={cn(
+                                                    model.available ? 'text-foreground' : 'text-foreground-tertiary'
+                                                )}>
+                                                    {model.name}
+                                                </span>
+                                                {!model.available && (
+                                                    <span className="text-xs text-foreground-tertiary">
+                                                        (Coming Soon)
+                                                    </span>
+                                                )}
+                                            </div>
+                                        </SelectItem>
+                                    ))}
                                 </SelectContent>
                             </Select>
                         </TooltipTrigger>

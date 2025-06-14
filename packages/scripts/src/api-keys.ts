@@ -22,6 +22,12 @@ const API_KEYS: Record<string, ApiKeyConfig> = {
         required: true,
         description: 'Anthropic',
     },
+    OPENAI_API_KEY: {
+        name: 'OPENAI_API_KEY',
+        message: 'Enter your OpenAI API key (optional, leave blank if you are using Anthropic):',
+        required: false,
+        description: 'OpenAI',
+    },
     MORPH_API_KEY: {
         name: 'MORPH_API_KEY',
         message: 'Enter your MorphLLM API key (optional, leave blank if you are using Relace):',
