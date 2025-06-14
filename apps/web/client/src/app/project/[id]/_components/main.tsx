@@ -20,6 +20,7 @@ import { Canvas } from './canvas';
 import { EditorBar } from './editor-bar';
 import { LeftPanel } from './left-panel';
 import { RightPanel } from './right-panel';
+import { SettingsDialog } from './settings-dialog';
 import { TopBar } from './top-bar';
 
 export const Main = observer(({ projectId }: { projectId: string }) => {
@@ -173,6 +174,9 @@ export const Main = observer(({ projectId }: { projectId: string }) => {
                 <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 animate-toolbar-up ">
                     <BottomBar />
                 </div>
+
+                {/* Settings Dialog */}
+                <SettingsDialog />
             </div>
         </TooltipProvider>
     );

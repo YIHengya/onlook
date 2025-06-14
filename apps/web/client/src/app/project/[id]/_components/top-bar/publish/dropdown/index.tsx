@@ -1,5 +1,6 @@
 import { DomainType } from '@onlook/models';
 import { Separator } from '@onlook/ui/separator';
+import { AdvancedSettingsSection } from './advanced-settings';
 import { DomainSection } from './domain-section';
 
 export const PublishDropdown = () => {
@@ -11,8 +12,8 @@ export const PublishDropdown = () => {
                 domain={customDomain}
                 type={DomainType.CUSTOM}
             />
-            <Separator />
-            <AdvancedSettingsSection /> */}
+            <Separator /> */}
+            <AdvancedSettingsSection />
         </div>
     );
 };

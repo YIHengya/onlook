@@ -4,6 +4,7 @@ import { Hotkey } from '@/components/hotkey';
 import { useEditorEngine } from '@/components/store/editor';
 import { CurrentUserAvatar } from '@/components/ui/avatar-dropdown';
 import { useFeatureFlags } from '@/hooks/use-feature-flags';
+import { SettingsTabValue } from '@onlook/models';
 import { Button } from '@onlook/ui/button';
 import { HotkeyLabel } from '@onlook/ui/hotkey-label';
 import { Icons } from '@onlook/ui/icons';
@@ -77,25 +78,24 @@ export const TopBar = observer(({ projectId }: { projectId: string }) => {
                         </Tooltip>
                     ))}
                 </motion.div>
-                {/* TODO: Enable */}
-                {/* <Tooltip>
-                        <TooltipTrigger asChild>
-                            <Button
-                                variant="ghost"
-                                size="icon"
-                                className="h-8"
-                                onClick={() => {
-                                    editorEngine.settingsTab = SettingsTabValue.VERSIONS;
-                                    editorEngine.isSettingsOpen = true;
-                                }}
-                            >
-                                <Icons.CounterClockwiseClock className="h-4 w-4" />
-                            </Button>
-                        </TooltipTrigger>
-                        <TooltipContent side="bottom">
-                            {t(transKeys.editor.toolbar.versionHistory)}
-                        </TooltipContent>
-                    </Tooltip> */}
+                <Tooltip>
+                    <TooltipTrigger asChild>
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8"
+                            onClick={() => {
+                                editorEngine.state.settingsTab = SettingsTabValue.PREFERENCES;
+                                editorEngine.state.settingsOpen = true;
+                            }}
+                        >
+                            <Icons.Gear className="h-4 w-4" />
+                        </Button>
+                    </TooltipTrigger>
+                    <TooltipContent side="bottom" hideArrow>
+                        Settings
+                    </TooltipContent>
+                </Tooltip>
                 <PublishButton />
                 <CurrentUserAvatar className="size-8 cursor-pointer hover:opacity-80" />
             </div>
