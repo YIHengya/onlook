@@ -22,6 +22,7 @@ export enum GOOGLE_MODELS {
     GEMINI_PRO = 'gemini-pro',
     GEMINI_1_5_PRO = 'gemini-1.5-pro',
     GEMINI_1_5_FLASH = 'gemini-1.5-flash',
+    GEMINI_2_0_FLASH = 'gemini-2.0-flash',
 }
 
 // Model display configuration
@@ -83,5 +84,12 @@ export const AVAILABLE_MODELS: ModelConfig[] = [
         provider: LLMProvider.GOOGLE,
         model: GOOGLE_MODELS.GEMINI_PRO,
         available: false, // Not implemented yet
+    },
+    {
+        id: 'gemini-2.0-flash',
+        name: 'Gemini 2.0 Flash',
+        provider: LLMProvider.GOOGLE,
+        model: GOOGLE_MODELS.GEMINI_2_0_FLASH,
+        available: true,
     },
 ];

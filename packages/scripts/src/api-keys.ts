@@ -28,6 +28,13 @@ const API_KEYS: Record<string, ApiKeyConfig> = {
         required: false,
         description: 'OpenAI',
     },
+    GOOGLE_GENERATIVE_AI_API_KEY: {
+        name: 'GOOGLE_GENERATIVE_AI_API_KEY',
+        message:
+            'Enter your Google Generative AI API key (optional, leave blank if you are using Anthropic):',
+        required: false,
+        description: 'Google Generative AI',
+    },
     MORPH_API_KEY: {
         name: 'MORPH_API_KEY',
         message: 'Enter your MorphLLM API key (optional, leave blank if you are using Relace):',

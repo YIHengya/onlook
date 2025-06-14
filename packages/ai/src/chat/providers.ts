@@ -1,6 +1,7 @@
 import { createAnthropic } from '@ai-sdk/anthropic';
+import { createGoogleGenerativeAI } from '@ai-sdk/google';
 import { createOpenAI } from '@ai-sdk/openai';
-import { CLAUDE_MODELS, LLMProvider, OPENAI_MODELS } from '@onlook/models';
+import { CLAUDE_MODELS, GOOGLE_MODELS, LLMProvider, OPENAI_MODELS } from '@onlook/models';
 import { assertNever } from '@onlook/utility';
 import { type LanguageModelV1 } from 'ai';
 
@@ -11,9 +12,7 @@ export async function initModel(provider: LLMProvider, model: string): Promise<L
         case LLMProvider.OPENAI:
             return await getOpenAIProvider(model as OPENAI_MODELS);
         case LLMProvider.GOOGLE:
-            // TODO: Implement Google provider when @ai-sdk/google is available
-            console.warn('Google provider not implemented yet, falling back to Anthropic');
-            return await getAnthropicProvider(CLAUDE_MODELS.SONNET_4);
+            return await getGoogleProvider(model as GOOGLE_MODELS);
         default:
             assertNever(provider);
     }
@@ -33,4 +32,9 @@ async function getOpenAIProvider(model: OPENAI_MODELS): Promise<LanguageModelV1>
     });
     // 使用 DashScope 的模型名称
     return openai('deepseek-r1-distill-llama-70b');
+}
+
+async function getGoogleProvider(model: GOOGLE_MODELS): Promise<LanguageModelV1> {
+    const google = createGoogleGenerativeAI();
+    return google(model);
 }
