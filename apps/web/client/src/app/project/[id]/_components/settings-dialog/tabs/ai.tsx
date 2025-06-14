@@ -1,25 +1,41 @@
 'use client';
 
+import { useUserManager } from '@/components/store/user';
 import { Button } from '@onlook/ui/button';
 import { Input } from '@onlook/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@onlook/ui/select';
 import { Switch } from '@onlook/ui/switch';
-import { AVAILABLE_MODELS, LLMProvider, type ModelConfig } from '@onlook/models';
+import { AVAILABLE_MODELS, LLMProvider, type ModelConfig, type AISettings } from '@onlook/models';
+import { observer } from 'mobx-react-lite';
 import { useState, useEffect } from 'react';
 
-export const AITab = () => {
+export const AITab = observer(() => {
+    const userManager = useUserManager();
     const [showApiKey, setShowApiKey] = useState(false);
-    const [provider, setProvider] = useState('openai');
-    const [customModels, setCustomModels] = useState('');
-    const [selectedModel, setSelectedModel] = useState(() => {
+
+    // Get AI settings from user manager
+    const aiSettings = userManager.settings.settings?.ai;
+
+    const [provider, setProvider] = useState(aiSettings?.provider || 'openai');
+    const [baseUrl, setBaseUrl] = useState(aiSettings?.baseUrl || '');
+    const [apiKey, setApiKey] = useState(aiSettings?.apiKey || '');
+    const [customModels, setCustomModels] = useState(aiSettings?.customModels || '');
+    const [selectedModel, setSelectedModel] = useState(aiSettings?.selectedModel || (() => {
         // Default to the first available model
         const defaultModel = AVAILABLE_MODELS.find(m => m.available);
         return defaultModel?.id || '';
-    });
-    const [enableCustomInterface, setEnableCustomInterface] = useState(true);
+    })());
+    const [temperature, setTemperature] = useState(aiSettings?.temperature || 0.7);
+    const [topP, setTopP] = useState(aiSettings?.topP || 1.0);
+    const [maxTokens, setMaxTokens] = useState(aiSettings?.maxTokens || 4000);
+    const [presencePenalty, setPresencePenalty] = useState(aiSettings?.presencePenalty || 0.0);
+    const [frequencyPenalty, setFrequencyPenalty] = useState(aiSettings?.frequencyPenalty || 0.0);
+    const [enableCustomInterface, setEnableCustomInterface] = useState(aiSettings?.enableCustomInterface ?? true);
 
-    // Debug log for enableCustomInterface state
-    console.log('AITab render - enableCustomInterface:', enableCustomInterface);
+    // Save settings function
+    const saveAISettings = async (updates: Partial<AISettings>) => {
+        await userManager.settings.updateAI(updates);
+    };
 
     const providers = [
         { value: LLMProvider.OPENAI, label: 'OpenAI' },
@@ -68,7 +84,10 @@ export const AITab = () => {
                     </div>
                     <Switch
                         checked={enableCustomInterface}
-                        onCheckedChange={setEnableCustomInterface}
+                        onCheckedChange={(checked) => {
+                            setEnableCustomInterface(checked);
+                            saveAISettings({ enableCustomInterface: checked });
+                        }}
                     />
                 </div>
 
@@ -82,7 +101,10 @@ export const AITab = () => {
                                 <div className="text-xs text-gray-400">切换不同的服务商</div>
                             </div>
                             <div className="w-[300px] ml-auto">
-                                <Select value={provider} onValueChange={setProvider}>
+                                <Select value={provider} onValueChange={(value) => {
+                                    setProvider(value);
+                                    saveAISettings({ provider: value });
+                                }}>
                                     <SelectTrigger className="bg-gray-800 border-gray-600 text-white focus:border-gray-500">
                                         <SelectValue />
                                     </SelectTrigger>
@@ -109,6 +131,11 @@ export const AITab = () => {
                             </div>
                             <div className="w-[300px] ml-auto">
                                 <Input
+                                    value={baseUrl}
+                                    onChange={(e) => {
+                                        setBaseUrl(e.target.value);
+                                        saveAISettings({ baseUrl: e.target.value });
+                                    }}
                                     placeholder={
                                         provider === 'openai' ? 'https://api.openai.com/v1' :
                                         provider === 'anthropic' ? 'https://api.anthropic.com' :
@@ -130,6 +157,11 @@ export const AITab = () => {
                             <div className="min-w-[300px] relative">
                                 <Input
                                     type={showApiKey ? 'text' : 'password'}
+                                    value={apiKey}
+                                    onChange={(e) => {
+                                        setApiKey(e.target.value);
+                                        saveAISettings({ apiKey: e.target.value });
+                                    }}
                                     placeholder="Enter your API key"
                                     className="bg-gray-800 border-gray-600 text-white focus:border-gray-500 pr-10"
                                 />
@@ -153,7 +185,10 @@ export const AITab = () => {
                             <div>
                                 <Input
                                     value={customModels}
-                                    onChange={(e) => setCustomModels(e.target.value)}
+                                    onChange={(e) => {
+                                        setCustomModels(e.target.value);
+                                        saveAISettings({ customModels: e.target.value });
+                                    }}
                                     placeholder="model1,model2,model3"
                                     className="bg-gray-800 border-gray-600 text-white focus:border-gray-500"
                                 />
@@ -179,7 +214,10 @@ export const AITab = () => {
                         <div className="text-xs text-gray-400">选择要使用的AI模型</div>
                     </div>
                     <div className="w-[300px] ml-auto">
-                        <Select value={selectedModel} onValueChange={setSelectedModel}>
+                        <Select value={selectedModel} onValueChange={(value) => {
+                            setSelectedModel(value);
+                            saveAISettings({ selectedModel: value });
+                        }}>
                             <SelectTrigger className="bg-gray-800 border-gray-600 text-white focus:border-gray-500">
                                 <SelectValue placeholder="选择模型" />
                             </SelectTrigger>
@@ -232,10 +270,15 @@ export const AITab = () => {
                             min="0"
                             max="2"
                             step="0.1"
-                            defaultValue="0.7"
+                            value={temperature}
+                            onChange={(e) => {
+                                const value = parseFloat(e.target.value);
+                                setTemperature(value);
+                                saveAISettings({ temperature: value });
+                            }}
                             className="flex-1 h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer"
                         />
-                        <div className="w-10 text-center text-sm text-gray-300">0.7</div>
+                        <div className="w-10 text-center text-sm text-gray-300">{temperature}</div>
                     </div>
                 </div>
 
@@ -267,7 +310,12 @@ export const AITab = () => {
                     <div className="min-w-[100px]">
                         <Input
                             type="number"
-                            defaultValue="4000"
+                            value={maxTokens}
+                            onChange={(e) => {
+                                const value = parseInt(e.target.value);
+                                setMaxTokens(value);
+                                saveAISettings({ maxTokens: value });
+                            }}
                             className="bg-gray-800 border-gray-600 text-white focus:border-gray-500 text-center"
                         />
                     </div>
@@ -313,4 +361,4 @@ export const AITab = () => {
             </div>
         </div>
     );
-};
+});

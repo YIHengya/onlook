@@ -1,6 +1,7 @@
 import { ChatType } from '@/app/api/chat/route';
 import { useChatContext } from '@/app/project/[id]/_hooks/use-chat';
 import { useEditorEngine } from '@/components/store/editor';
+import { useUserManager } from '@/components/store/user';
 import { FOCUS_CHAT_INPUT_EVENT } from '@/components/store/editor/chat';
 import { transKeys } from '@/i18n/keys';
 import { AVAILABLE_MODELS, EditorTabValue, type ImageMessageContext } from '@onlook/models';
@@ -23,17 +24,35 @@ import { ActionButtons } from './action-buttons';
 export const ChatInput = observer(() => {
     const { sendMessages, stop, isWaiting } = useChatContext();
     const editorEngine = useEditorEngine();
+    const userManager = useUserManager();
     const t = useTranslations();
     const textareaRef = useRef<HTMLTextAreaElement>(null);
     const [inputValue, setInputValue] = useState('');
     const [isComposing, setIsComposing] = useState(false);
     const [actionTooltipOpen, setActionTooltipOpen] = useState(false);
     const [isDragging, setIsDragging] = useState(false);
-    const [selectedModel, setSelectedModel] = useState(() => {
-        // Default to the first available model
+
+    // Get selected model from global AI settings
+    const selectedModel = userManager.settings.settings?.ai?.selectedModel || (() => {
+        // Default to the first available model if no setting exists
         const defaultModel = AVAILABLE_MODELS.find(m => m.available);
         return defaultModel?.id || 'claude-sonnet-4';
-    });
+    })();
+
+    // Function to update selected model globally
+    const updateSelectedModel = async (modelId: string) => {
+        await userManager.settings.updateAI({ selectedModel: modelId });
+    };
+
+    // Parse custom models from settings
+    const parseCustomModels = (modelsString: string): string[] => {
+        return modelsString
+            .split(',')
+            .map(model => model.trim())
+            .filter(model => model.length > 0);
+    };
+
+    const customModels = parseCustomModels(userManager.settings.settings?.ai?.customModels || '');
 
     const focusInput = () => {
         requestAnimationFrame(() => {
@@ -307,12 +326,13 @@ export const ChatInput = observer(() => {
                     {/* AI Model Selector */}
                     <Tooltip>
                         <TooltipTrigger asChild>
-                            <Select value={selectedModel} onValueChange={setSelectedModel}>
+                            <Select value={selectedModel} onValueChange={updateSelectedModel}>
                                 <SelectTrigger className="w-fit min-w-[120px] h-8 text-xs bg-transparent border-none hover:bg-background/50 text-foreground-tertiary hover:text-foreground-secondary transition-all duration-200 focus:ring-0 focus:ring-offset-0 shadow-none">
                                     <Icons.Sparkles className="h-3 w-3 mr-1" />
                                     <SelectValue />
                                 </SelectTrigger>
                                 <SelectContent align="end" className="min-w-[160px]">
+                                    {/* Available Models */}
                                     {AVAILABLE_MODELS.map((model) => (
                                         <SelectItem
                                             key={model.id}
@@ -331,6 +351,17 @@ export const ChatInput = observer(() => {
                                                     </span>
                                                 )}
                                             </div>
+                                        </SelectItem>
+                                    ))}
+
+                                    {/* Custom Models */}
+                                    {customModels.map((model) => (
+                                        <SelectItem
+                                            key={`custom-${model}`}
+                                            value={model}
+                                            className="text-blue-300"
+                                        >
+                                            {model} <span className="text-xs text-gray-400">(自定义)</span>
                                         </SelectItem>
                                     ))}
                                 </SelectContent>

@@ -75,7 +75,10 @@ export const UserMessage = ({ message }: UserMessageProps) => {
             console.error('Failed to resubmit message');
             return;
         }
-        sendMessages(newMessages, ChatType.EDIT);
+
+        // Get selected model from global AI settings
+        const selectedModel = userManager.settings.settings?.ai?.selectedModel;
+        sendMessages(newMessages, ChatType.EDIT, selectedModel);
     };
 
     function renderEditingInput() {

@@ -1,9 +1,23 @@
 import { DefaultSettings } from '@onlook/constants';
-import type { UserMetadata, UserSettings } from '@onlook/models';
+import type { UserMetadata, UserSettings, AISettings } from '@onlook/models';
 import { get } from 'lodash';
 import type { AuthUser, UserSettings as DbUserSettings } from '../schema';
 
 export const toUserSettings = (settings: DbUserSettings): UserSettings => {
+    const aiSettings: AISettings = {
+        provider: settings.aiProvider ?? 'openai',
+        baseUrl: settings.aiBaseUrl ?? undefined,
+        apiKey: settings.aiApiKey ?? undefined,
+        customModels: settings.aiCustomModels ?? '',
+        selectedModel: settings.aiSelectedModel ?? '',
+        temperature: settings.aiTemperature ?? 0.7,
+        topP: settings.aiTopP ?? 1.0,
+        maxTokens: settings.aiMaxTokens ?? 4000,
+        presencePenalty: settings.aiPresencePenalty ?? 0.0,
+        frequencyPenalty: settings.aiFrequencyPenalty ?? 0.0,
+        enableCustomInterface: settings.aiEnableCustomInterface ?? true,
+    };
+
     return {
         id: settings.id,
         chat: {
@@ -14,6 +28,7 @@ export const toUserSettings = (settings: DbUserSettings): UserSettings => {
                 settings.showSuggestions ?? DefaultSettings.CHAT_SETTINGS.showSuggestions,
             showMiniChat: settings.showMiniChat ?? DefaultSettings.CHAT_SETTINGS.showMiniChat,
         },
+        ai: aiSettings,
     };
 };
 
@@ -21,10 +36,23 @@ export const fromUserSettings = (userId: string, settings: UserSettings): DbUser
     return {
         id: settings.id,
         userId,
+        // Chat settings
         autoApplyCode: settings.chat.autoApplyCode,
         expandCodeBlocks: settings.chat.expandCodeBlocks,
         showSuggestions: settings.chat.showSuggestions,
         showMiniChat: settings.chat.showMiniChat,
+        // AI settings
+        aiProvider: settings.ai?.provider ?? 'openai',
+        aiBaseUrl: settings.ai?.baseUrl ?? null,
+        aiApiKey: settings.ai?.apiKey ?? null,
+        aiCustomModels: settings.ai?.customModels ?? '',
+        aiSelectedModel: settings.ai?.selectedModel ?? '',
+        aiTemperature: settings.ai?.temperature ?? 0.7,
+        aiTopP: settings.ai?.topP ?? 1.0,
+        aiMaxTokens: settings.ai?.maxTokens ?? 4000,
+        aiPresencePenalty: settings.ai?.presencePenalty ?? 0.0,
+        aiFrequencyPenalty: settings.ai?.frequencyPenalty ?? 0.0,
+        aiEnableCustomInterface: settings.ai?.enableCustomInterface ?? true,
     };
 };
 

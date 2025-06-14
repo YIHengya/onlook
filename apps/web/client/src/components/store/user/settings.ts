@@ -1,6 +1,6 @@
 import { api } from '@/trpc/client';
 import { fromUserSettings, toUserSettings } from '@onlook/db';
-import type { ChatSettings, UserSettings } from '@onlook/models';
+import type { ChatSettings, UserSettings, AISettings } from '@onlook/models';
 import { createDefaultUserSettings } from '@onlook/utility';
 import { makeAutoObservable, reaction } from 'mobx';
 import type { UserManager } from './manager';
@@ -50,5 +50,24 @@ export class UserSettingsManager {
 
     async updateChat(newSettings: Partial<ChatSettings>) {
         await this.update({ ...this.settings, chat: { ...this.settings.chat, ...newSettings } });
+    }
+
+    async updateAI(newSettings: Partial<AISettings>) {
+        const currentAI = this.settings.ai || {
+            provider: 'openai',
+            customModels: '',
+            selectedModel: '',
+            temperature: 0.7,
+            topP: 1.0,
+            maxTokens: 4000,
+            presencePenalty: 0.0,
+            frequencyPenalty: 0.0,
+            enableCustomInterface: true,
+        };
+
+        await this.update({
+            ...this.settings,
+            ai: { ...currentAI, ...newSettings }
+        });
     }
 }

@@ -89,7 +89,10 @@ export const Main = observer(({ projectId }: { projectId: string }) => {
             return;
         }
         createManager.pendingCreationData = null;
-        sendMessages(messages, ChatType.CREATE);
+
+        // Get selected model from global AI settings
+        const selectedModel = userManager.settings.settings?.ai?.selectedModel;
+        sendMessages(messages, ChatType.CREATE, selectedModel);
     };
 
     useEffect(() => {
