@@ -1,5 +1,6 @@
 import { ChatType } from '@/app/api/chat/route';
 import { useEditorEngine } from '@/components/store/editor';
+import { useUserManager } from '@/components/store/user';
 import { Button } from '@onlook/ui/button';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@onlook/ui/collapsible';
 import { Icons } from '@onlook/ui/icons';
@@ -13,6 +14,7 @@ import { useChatContext } from '../../../_hooks/use-chat';
 export const ErrorSection = observer(() => {
     const { isWaiting, sendMessages } = useChatContext();
     const editorEngine = useEditorEngine();
+    const userManager = useUserManager();
     const [isOpen, setIsOpen] = useState(false);
     const errorCount = editorEngine.error.errors.length;
 
@@ -22,7 +24,9 @@ export const ErrorSection = observer(() => {
             toast.error('Failed to send fix error messages. Please try again.');
             return;
         }
-        sendMessages(messages, ChatType.FIX);
+        // Get selected model from global AI settings
+        const selectedModel = userManager.settings.settings?.ai?.selectedModel || 'claude-sonnet-4';
+        sendMessages(messages, ChatType.FIX, selectedModel);
     }
 
     return (

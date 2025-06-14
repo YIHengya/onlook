@@ -89,9 +89,8 @@ export const Main = observer(({ projectId }: { projectId: string }) => {
             return;
         }
         createManager.pendingCreationData = null;
-
         // Get selected model from global AI settings
-        const selectedModel = userManager.settings.settings?.ai?.selectedModel;
+        const selectedModel = userManager.settings.settings?.ai?.selectedModel || 'claude-sonnet-4';
         sendMessages(messages, ChatType.CREATE, selectedModel);
     };
 

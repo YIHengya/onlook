@@ -89,7 +89,9 @@ export const OverlayChat = observer(
                 console.error('No stream messages');
                 return;
             }
-            sendMessages(streamMessages, ChatType.EDIT);
+            // Get selected model from global AI settings
+            const selectedModel = userManager.settings.settings?.ai?.selectedModel || 'claude-sonnet-4';
+            sendMessages(streamMessages, ChatType.EDIT, selectedModel);
             reload();
 
             setInputState(DEFAULT_INPUT_STATE);

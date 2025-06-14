@@ -1,6 +1,7 @@
 import { ChatType } from '@/app/api/chat/route';
 import { useChatContext } from '@/app/project/[id]/_hooks/use-chat';
 import { useEditorEngine } from '@/components/store/editor';
+import { useUserManager } from '@/components/store/user';
 import type { UserChatMessageImpl } from '@/components/store/editor/chat/message/user';
 import { Button } from '@onlook/ui/button';
 import { Icons } from '@onlook/ui/icons/index';
@@ -16,6 +17,7 @@ interface UserMessageProps {
 
 export const UserMessage = ({ message }: UserMessageProps) => {
     const editorEngine = useEditorEngine();
+    const userManager = useUserManager();
     const { sendMessages } = useChatContext();
     const [isCopied, setIsCopied] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
@@ -75,9 +77,8 @@ export const UserMessage = ({ message }: UserMessageProps) => {
             console.error('Failed to resubmit message');
             return;
         }
-
         // Get selected model from global AI settings
-        const selectedModel = userManager.settings.settings?.ai?.selectedModel;
+        const selectedModel = userManager.settings.settings?.ai?.selectedModel || 'claude-sonnet-4';
         sendMessages(newMessages, ChatType.EDIT, selectedModel);
     };
 
