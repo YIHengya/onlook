@@ -15,24 +15,37 @@ export enum ChatType {
 function inferProviderFromModelName(modelName: string): LLMProvider {
     const lowerModelName = modelName.toLowerCase();
 
-    // Google/Gemini models
-    if (lowerModelName.startsWith('gemini-') || lowerModelName.startsWith('gemini')) {
+    // Google/Gemini models - check for gemini prefix
+    if (lowerModelName.startsWith('gemini')) {
         return LLMProvider.GOOGLE;
     }
 
-    // OpenAI models
-    if (lowerModelName.startsWith('gpt-') || lowerModelName.startsWith('gpt') ||
-        lowerModelName.includes('turbo') || lowerModelName.startsWith('text-') ||
-        lowerModelName.startsWith('davinci') || lowerModelName.startsWith('curie') ||
-        lowerModelName.startsWith('babbage') || lowerModelName.startsWith('ada')) {
+    // OpenAI models - check for gpt prefix and other OpenAI model patterns
+    if (lowerModelName.startsWith('gpt') ||
+        lowerModelName.includes('turbo') ||
+        lowerModelName.startsWith('text-') ||
+        lowerModelName.startsWith('davinci') ||
+        lowerModelName.startsWith('curie') ||
+        lowerModelName.startsWith('babbage') ||
+        lowerModelName.startsWith('ada') ||
+        lowerModelName.startsWith('o1') ||
+        lowerModelName.includes('chatgpt')) {
         return LLMProvider.OPENAI;
     }
 
-    // Anthropic models
-    if (lowerModelName.startsWith('claude-') || lowerModelName.startsWith('claude') ||
-        lowerModelName.includes('sonnet') || lowerModelName.includes('haiku') ||
+    // Anthropic models - check for claude prefix and model names
+    if (lowerModelName.startsWith('claude') ||
+        lowerModelName.includes('sonnet') ||
+        lowerModelName.includes('haiku') ||
         lowerModelName.includes('opus')) {
         return LLMProvider.ANTHROPIC;
+    }
+
+    // Bedrock models - check for bedrock-specific patterns
+    if (lowerModelName.includes('bedrock') ||
+        lowerModelName.startsWith('us.anthropic') ||
+        lowerModelName.startsWith('amazon.')) {
+        return LLMProvider.BEDROCK;
     }
 
     // Default to OpenAI for unknown models (most compatible)
@@ -60,12 +73,12 @@ export async function POST(req: Request) {
     const modelConfig = AVAILABLE_MODELS.find(m => m.id === selectedModel);
 
     let provider = LLMProvider.ANTHROPIC;
-    let modelName = CLAUDE_MODELS.SONNET_4;
+    let modelName: string = CLAUDE_MODELS.SONNET_4;
 
     if (modelConfig && modelConfig.available) {
         // Use predefined model configuration
         provider = modelConfig.provider;
-        modelName = modelConfig.model as CLAUDE_MODELS;
+        modelName = modelConfig.model; // Remove incorrect type casting
         console.log(`Using predefined model: ${modelConfig.name} (${provider})`);
     } else if (selectedModel) {
         // For custom models, infer the provider from the model name
