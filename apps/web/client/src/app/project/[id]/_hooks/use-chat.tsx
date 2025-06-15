@@ -1,5 +1,6 @@
 import { ChatType } from '@/app/api/chat/route';
 import { useEditorEngine } from '@/components/store/editor';
+import { useUserManager } from '@/components/store/user';
 import type { EditorEngine } from '@/components/store/editor/engine';
 import { useChat, type UseChatHelpers } from '@ai-sdk/react';
 import {
@@ -15,11 +16,12 @@ import type { Message, ToolCall } from 'ai';
 import { createContext, useContext } from 'react';
 import { z } from 'zod';
 
-type ExtendedUseChatHelpers = UseChatHelpers & { sendMessages: (messages: Message[], type: ChatType, selectedModel?: string) => Promise<string | null | undefined> };
+type ExtendedUseChatHelpers = UseChatHelpers & { sendMessages: (messages: Message[], type: ChatType) => Promise<string | null | undefined> };
 const ChatContext = createContext<ExtendedUseChatHelpers | null>(null);
 
 export function ChatProvider({ children }: { children: React.ReactNode }) {
     const editorEngine = useEditorEngine();
+    const userManager = useUserManager();
     const chat = useChat({
         id: 'user-chat',
         api: '/api/chat',
@@ -35,13 +37,15 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
         },
     });
 
-    const sendMessages = async (messages: Message[], type: ChatType = ChatType.EDIT, selectedModel?: string) => {
-        console.log('sendMessages called with selectedModel:', selectedModel);
+    const sendMessages = async (messages: Message[], type: ChatType = ChatType.EDIT) => {
+        // Get selected model from AI settings
+        const selectedModel = userManager.settings.settings?.ai?.selectedModel || 'claude-sonnet-4';
+
         chat.setMessages(messages);
         return chat.reload({
             body: {
                 chatType: type,
-                selectedModel: selectedModel || 'claude-sonnet-4',
+                selectedModel: selectedModel,
             },
         });
     };

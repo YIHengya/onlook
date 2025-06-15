@@ -17,7 +17,6 @@ interface UserMessageProps {
 
 export const UserMessage = ({ message }: UserMessageProps) => {
     const editorEngine = useEditorEngine();
-    const userManager = useUserManager();
     const { sendMessages } = useChatContext();
     const [isCopied, setIsCopied] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
@@ -77,9 +76,7 @@ export const UserMessage = ({ message }: UserMessageProps) => {
             console.error('Failed to resubmit message');
             return;
         }
-        // Get selected model from global AI settings
-        const selectedModel = userManager.settings.settings?.ai?.selectedModel || 'claude-sonnet-4';
-        sendMessages(newMessages, ChatType.EDIT, selectedModel);
+        sendMessages(newMessages, ChatType.EDIT);
     };
 
     function renderEditingInput() {

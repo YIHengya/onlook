@@ -154,7 +154,7 @@ export const ChatInput = observer(() => {
         }
         console.log('streamMessages', streamMessages);
 
-        sendMessages(streamMessages, ChatType.EDIT, selectedModel);
+        sendMessages(streamMessages, ChatType.EDIT);
         setInputValue('');
     }
 

@@ -175,32 +175,32 @@ export const AITab = observer(() => {
                                 </Button>
                             </div>
                         </div>
-
-                        {/* Custom Models */}
-                        <div className="py-4">
-                            <div className="mb-3">
-                                <div className="text-sm font-medium text-gray-300">自定义模型名</div>
-                                <div className="text-xs text-gray-400">增加自定义模型可选项，使用英文逗号隔开 model1,model2,model3</div>
-                            </div>
-                            <div>
-                                <Input
-                                    value={customModels}
-                                    onChange={(e) => {
-                                        setCustomModels(e.target.value);
-                                        saveAISettings({ customModels: e.target.value });
-                                    }}
-                                    placeholder="model1,model2,model3"
-                                    className="bg-gray-800 border-gray-600 text-white focus:border-gray-500"
-                                />
-                                {customModels && (
-                                    <div className="text-xs text-blue-400 mt-1">
-                                        ({parseCustomModels(customModels).length} model{parseCustomModels(customModels).length !== 1 ? 's' : ''} detected)
-                                    </div>
-                                )}
-                            </div>
-                        </div>
                     </>
                 )}
+
+                {/* Custom Models - Always visible, not affected by enableCustomInterface */}
+                <div className="py-4 border-b border-gray-700">
+                    <div className="mb-3">
+                        <div className="text-sm font-medium text-gray-300">自定义模型名</div>
+                        <div className="text-xs text-gray-400">增加自定义模型可选项，使用英文逗号隔开 model1,model2,model3</div>
+                    </div>
+                    <div>
+                        <Input
+                            value={customModels}
+                            onChange={(e) => {
+                                setCustomModels(e.target.value);
+                                saveAISettings({ customModels: e.target.value });
+                            }}
+                            placeholder="model1,model2,model3"
+                            className="bg-gray-800 border-gray-600 text-white focus:border-gray-500"
+                        />
+                        {customModels && (
+                            <div className="text-xs text-blue-400 mt-1">
+                                ({parseCustomModels(customModels).length} model{parseCustomModels(customModels).length !== 1 ? 's' : ''} detected)
+                            </div>
+                        )}
+                    </div>
+                </div>
             </div>
 
             {/* Model Settings Section */}
