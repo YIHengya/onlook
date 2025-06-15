@@ -9,18 +9,52 @@ export enum ChatType {
     FIX = 'fix',
 }
 
+/**
+ * Infer the provider from a custom model name based on common prefixes
+ */
+function inferProviderFromModelName(modelName: string): LLMProvider {
+    const lowerModelName = modelName.toLowerCase();
+
+    // Google/Gemini models
+    if (lowerModelName.startsWith('gemini-') || lowerModelName.startsWith('gemini')) {
+        return LLMProvider.GOOGLE;
+    }
+
+    // OpenAI models
+    if (lowerModelName.startsWith('gpt-') || lowerModelName.startsWith('gpt') ||
+        lowerModelName.includes('turbo') || lowerModelName.startsWith('text-') ||
+        lowerModelName.startsWith('davinci') || lowerModelName.startsWith('curie') ||
+        lowerModelName.startsWith('babbage') || lowerModelName.startsWith('ada')) {
+        return LLMProvider.OPENAI;
+    }
+
+    // Anthropic models
+    if (lowerModelName.startsWith('claude-') || lowerModelName.startsWith('claude') ||
+        lowerModelName.includes('sonnet') || lowerModelName.includes('haiku') ||
+        lowerModelName.includes('opus')) {
+        return LLMProvider.ANTHROPIC;
+    }
+
+    // Default to OpenAI for unknown models (most compatible)
+    return LLMProvider.OPENAI;
+}
+
 export async function POST(req: Request) {
     console.log('=== CHAT API ROUTE CALLED ===');
 
     const body = await req.json();
     console.log('Full request body:', JSON.stringify(body, null, 2));
 
-    const { messages, maxSteps, chatType, selectedModel } = body;
+    const { messages, maxSteps, chatType, aiSettings } = body;
+
+    // Get selected model from AI settings
+    const selectedModel = aiSettings?.selectedModel || 'claude-sonnet-4';
 
     console.log('API received selectedModel:', selectedModel);
     console.log('API received chatType:', chatType);
     console.log('API received messages count:', messages?.length);
     console.log('API received maxSteps:', maxSteps);
+    console.log('API received aiSettings:', aiSettings);
 
     // Find the model configuration from AVAILABLE_MODELS
     const modelConfig = AVAILABLE_MODELS.find(m => m.id === selectedModel);
@@ -29,11 +63,19 @@ export async function POST(req: Request) {
     let modelName = CLAUDE_MODELS.SONNET_4;
 
     if (modelConfig && modelConfig.available) {
+        // Use predefined model configuration
         provider = modelConfig.provider;
         modelName = modelConfig.model as CLAUDE_MODELS;
+        console.log(`Using predefined model: ${modelConfig.name} (${provider})`);
     } else if (selectedModel) {
-        console.warn(`Model ${selectedModel} is not available or not found, falling back to Claude Sonnet 4`);
+        // For custom models, infer the provider from the model name
+        provider = inferProviderFromModelName(selectedModel);
+        modelName = selectedModel; // Use the custom model name directly
+        console.log(`Using custom model: ${selectedModel} with inferred provider: ${provider}`);
+    } else {
+        console.log('No model selected, using default Claude Sonnet 4');
     }
+
 
     const model = await initModel(provider, modelName);
     const systemPrompt = chatType === ChatType.CREATE ? getCreatePageSystemPrompt() : getSystemPrompt();

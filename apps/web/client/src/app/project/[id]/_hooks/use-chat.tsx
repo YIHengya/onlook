@@ -38,14 +38,14 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
     });
 
     const sendMessages = async (messages: Message[], type: ChatType = ChatType.EDIT) => {
-        // Get selected model from AI settings
-        const selectedModel = userManager.settings.settings?.ai?.selectedModel || 'claude-sonnet-4';
+        // Get AI settings from user manager
+        const aiSettings = userManager.settings.settings?.ai;
 
         chat.setMessages(messages);
         return chat.reload({
             body: {
                 chatType: type,
-                selectedModel: selectedModel,
+                aiSettings: aiSettings, // Pass the entire AI settings object
             },
         });
     };
