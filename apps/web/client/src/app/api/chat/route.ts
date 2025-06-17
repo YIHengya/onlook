@@ -1,6 +1,11 @@
+import { getBaseUrl } from '@/trpc/helpers';
 import { chatToolSet, getCreatePageSystemPrompt, getSystemPrompt, initModel } from '@onlook/ai';
 import { AVAILABLE_MODELS, CLAUDE_MODELS, LLMProvider } from '@onlook/models';
 import { generateObject, NoSuchToolError, streamText } from 'ai';
+import { db } from '@onlook/db/src/client';
+import { apiKeys } from '@onlook/db';
+import { eq, and, desc } from 'drizzle-orm';
+import { NextRequest, NextResponse } from 'next/server';
 
 export enum ChatType {
     ASK = 'ask',
@@ -63,12 +68,6 @@ export async function POST(req: Request) {
     // Get selected model from AI settings
     const selectedModel = aiSettings?.selectedModel || 'claude-sonnet-4';
 
-    console.log('API received selectedModel:', selectedModel);
-    console.log('API received chatType:', chatType);
-    console.log('API received messages count:', messages?.length);
-    console.log('API received maxSteps:', maxSteps);
-    console.log('API received aiSettings:', aiSettings);
-
     // Find the model configuration from AVAILABLE_MODELS
     const modelConfig = AVAILABLE_MODELS.find(m => m.id === selectedModel);
 
@@ -89,8 +88,34 @@ export async function POST(req: Request) {
         console.log('No model selected, using default Claude Sonnet 4');
     }
 
+    // 通过内部 API 获取 API Key
+    let selectedApiKey: string | null = null;
+    try {
+        console.log(`Attempting to get API key from database for provider: ${provider}`);
 
-    const model = await initModel(provider, modelName);
+        const response = await fetch(`${getBaseUrl()}/api/keys/get-optimal`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ provider: provider.toLowerCase() }),
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            selectedApiKey = data.apiKey;
+            console.log(`Retrieved API key from database for provider: ${provider}`);
+        } else {
+            console.log(`Failed to get API key from database (status: ${response.status}), falling back to environment variables`);
+        }
+    } catch (error) {
+        console.error('Failed to fetch API key:', error);
+        console.log('Falling back to environment variables for API key');
+    }
+
+    // 初始化模型，传入API密钥
+    const model = await initModel(provider, modelName, selectedApiKey || undefined);
+ 
     const systemPrompt = chatType === ChatType.CREATE ? getCreatePageSystemPrompt() : getSystemPrompt();
 
     const result = streamText({
