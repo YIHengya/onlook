@@ -1,11 +1,7 @@
-import { getBaseUrl } from '@/trpc/helpers';
 import { chatToolSet, getCreatePageSystemPrompt, getSystemPrompt, initModel } from '@onlook/ai';
 import { AVAILABLE_MODELS, CLAUDE_MODELS, LLMProvider } from '@onlook/models';
 import { generateObject, NoSuchToolError, streamText } from 'ai';
-import { db } from '@onlook/db/src/client';
-import { apiKeys } from '@onlook/db';
-import { eq, and, desc } from 'drizzle-orm';
-import { NextRequest, NextResponse } from 'next/server';
+import { getProviderApiKey } from '@/utils/api';
 
 export enum ChatType {
     ASK = 'ask',
@@ -57,14 +53,10 @@ function inferProviderFromModelName(modelName: string): LLMProvider {
     return LLMProvider.OPENAI;
 }
 
-export async function POST(req: Request) {
-    console.log('=== CHAT API ROUTE CALLED ===');
-
-    const body = await req.json();
-    console.log('Full request body:', JSON.stringify(body, null, 2));
-
-    const { messages, maxSteps, chatType, aiSettings } = body;
-
+/**
+ * Get model configuration based on AI settings
+ */
+function getModelConfiguration(aiSettings: any): { provider: LLMProvider; modelName: string } {
     // Get selected model from AI settings
     const selectedModel = aiSettings?.selectedModel || 'claude-sonnet-4';
 
@@ -77,7 +69,7 @@ export async function POST(req: Request) {
     if (modelConfig && modelConfig.available) {
         // Use predefined model configuration
         provider = modelConfig.provider;
-        modelName = modelConfig.model; // Remove incorrect type casting
+        modelName = modelConfig.model;
         console.log(`Using predefined model: ${modelConfig.name} (${provider})`);
     } else if (selectedModel) {
         // For custom models, infer the provider from the model name
@@ -88,30 +80,22 @@ export async function POST(req: Request) {
         console.log('No model selected, using default Claude Sonnet 4');
     }
 
-    // 通过内部 API 获取 API Key
-    let selectedApiKey: string | null = null;
-    try {
-        console.log(`Attempting to get API key from database for provider: ${provider}`);
+    return { provider, modelName };
+}
 
-        const response = await fetch(`${getBaseUrl()}/api/keys/get-optimal`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ provider: provider.toLowerCase() }),
-        });
+export async function POST(req: Request) {
+    console.log('=== CHAT API ROUTE CALLED ===');
 
-        if (response.ok) {
-            const data = await response.json();
-            selectedApiKey = data.apiKey;
-            console.log(`Retrieved API key from database for provider: ${provider}`);
-        } else {
-            console.log(`Failed to get API key from database (status: ${response.status}), falling back to environment variables`);
-        }
-    } catch (error) {
-        console.error('Failed to fetch API key:', error);
-        console.log('Falling back to environment variables for API key');
-    }
+    const body = await req.json();
+    console.log('Full request body:', JSON.stringify(body, null, 2));
+
+    const { messages, maxSteps, chatType, aiSettings } = body;
+
+    // Get model configuration using the dedicated method
+    const { provider, modelName } = getModelConfiguration(aiSettings);
+
+    // 获取API密钥
+    const selectedApiKey = await getProviderApiKey(provider.toLowerCase());
 
     // 初始化模型，传入API密钥
     const model = await initModel(provider, modelName, selectedApiKey || undefined);

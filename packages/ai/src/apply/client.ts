@@ -12,9 +12,9 @@ export async function applyCodeChangeWithMorph(
     originalCode: string,
     updateSnippet: string,
 ): Promise<string | null> {
-    const apiKey = process.env.MORPH_API_KEY;
+    const apiKey = await getProviderApiKey('morph');
     if (!apiKey) {
-        throw new Error('MORPH_API_KEY is not set');
+        throw new Error('无法获取MORPH API密钥');
     }
     const client = new OpenAI({
         apiKey,
@@ -37,9 +37,9 @@ export async function applyCodeChangeWithRelace(
     originalCode: string,
     updateSnippet: string,
 ): Promise<string | null> {
-    const apiKey = process.env.RELACE_API_KEY;
+    const apiKey = await getProviderApiKey('relace');
     if (!apiKey) {
-        throw new Error('RELACE_API_KEY is not set');
+        throw new Error('无法获取RELACE API密钥');
     }
     const url = 'https://instantapply.endpoint.relace.run/v1/code/apply';
     const headers = {
@@ -101,4 +101,38 @@ export async function applyCodeChange(
     }
 
     return null;
+}
+
+export async function getProviderApiKey(provider: string): Promise<string | null> {
+    let selectedApiKey: string | null = null;
+    try {
+        const response = await fetch(`${getBaseUrl()}/api/keys/get-optimal`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ provider: provider.toLowerCase() }),
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            selectedApiKey = data.apiKey;
+            console.log(`Retrieved API key from database for provider: ${provider}`);
+        } else {
+            console.log(
+                `Failed to get API key from database (status: ${response.status}), falling back to environment variables`,
+            );
+        }
+    } catch (error) {
+        console.error('Failed to fetch API key:', error);
+        console.log('Falling back to environment variables for API key');
+    }
+
+    return selectedApiKey;
+}
+
+function getBaseUrl() {
+    if (typeof window !== 'undefined') return window.location.origin;
+    if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`;
+    return `http://localhost:${process.env.PORT ?? 3000}`;
 }

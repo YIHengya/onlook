@@ -24,6 +24,11 @@ export enum GOOGLE_MODELS {
     GEMINI_1_5_PRO = 'gemini-1.5-pro',
     GEMINI_1_5_FLASH = 'gemini-1.5-flash',
     GEMINI_2_0_FLASH = 'gemini-2.0-flash',
+    GEMINI_2_5_FLASH_PREVIEW_04_17 = 'gemini-2.5-flash-preview-04-17',
+    GEMINI_2_5_PRO_PREVIEW_03_25 = 'gemini-2.5-pro-preview-03-25',
+    GEMINI_2_5_PRO_PREVIEW_05_06 = 'gemini-2.5-pro-preview-05-06',
+    GEMINI_2_5_FLASH_PREVIEW_05_20 = 'gemini-2.5-flash-preview-05-20',
+    GEMINI_2_5_PRO_PREVIEW_06_05 = 'gemini-2.5-pro-preview-06-05',
 }
 
 export enum BEDROCK_MODELS {
@@ -104,6 +109,41 @@ export const AVAILABLE_MODELS: ModelConfig[] = [
         name: 'Gemini 2.0 Flash',
         provider: LLMProvider.GOOGLE,
         model: GOOGLE_MODELS.GEMINI_2_0_FLASH,
+        available: true,
+    },
+    {
+        id: 'gemini-2.5-flash-preview-04-17',
+        name: 'Gemini 2.5 Flash Preview (04-17)',
+        provider: LLMProvider.GOOGLE,
+        model: GOOGLE_MODELS.GEMINI_2_5_FLASH_PREVIEW_04_17,
+        available: true,
+    },
+    {
+        id: 'gemini-2.5-pro-preview-03-25',
+        name: 'Gemini 2.5 Pro Preview (03-25)',
+        provider: LLMProvider.GOOGLE,
+        model: GOOGLE_MODELS.GEMINI_2_5_PRO_PREVIEW_03_25,
+        available: true,
+    },
+    {
+        id: 'gemini-2.5-pro-preview-05-06',
+        name: 'Gemini 2.5 Pro Preview (05-06)',
+        provider: LLMProvider.GOOGLE,
+        model: GOOGLE_MODELS.GEMINI_2_5_PRO_PREVIEW_05_06,
+        available: true,
+    },
+    {
+        id: 'gemini-2.5-flash-preview-05-20',
+        name: 'Gemini 2.5 Flash Preview (05-20)',
+        provider: LLMProvider.GOOGLE,
+        model: GOOGLE_MODELS.GEMINI_2_5_FLASH_PREVIEW_05_20,
+        available: true,
+    },
+    {
+        id: 'gemini-2.5-pro-preview-06-05',
+        name: 'Gemini 2.5 Pro Preview (06-05)',
+        provider: LLMProvider.GOOGLE,
+        model: GOOGLE_MODELS.GEMINI_2_5_PRO_PREVIEW_06_05,
         available: true,
     },
     {
