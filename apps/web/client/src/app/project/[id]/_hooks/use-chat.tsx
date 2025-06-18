@@ -28,12 +28,14 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
         maxSteps: 10,
         onToolCall: (toolCall) => handleToolCall(toolCall.toolCall, editorEngine),
         onFinish: (message, config) => {
+            console.log('config', config);
             if (config.finishReason === 'stop' || config.finishReason === 'error') {
                 editorEngine.chat.conversation.addAssistantMessage(message);
             }
         },
         onError: (error) => {
             console.error('Error in chat', error);
+            editorEngine.chat.error.handleChatError(error);
         },
     });
 
@@ -41,6 +43,7 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
         // Get AI settings from user manager
         const aiSettings = userManager.settings.settings?.ai;
 
+        editorEngine.chat.error.clear();
         chat.setMessages(messages);
         return chat.reload({
             body: {

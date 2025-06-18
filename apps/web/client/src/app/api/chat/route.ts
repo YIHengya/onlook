@@ -1,3 +1,4 @@
+import { createClient } from '@/utils/supabase/request-server';
 import { chatToolSet, getCreatePageSystemPrompt, getSystemPrompt, initModel } from '@onlook/ai';
 import { AVAILABLE_MODELS, LLMProvider } from '@onlook/models';
 import { generateObject, NoSuchToolError, streamText } from 'ai';

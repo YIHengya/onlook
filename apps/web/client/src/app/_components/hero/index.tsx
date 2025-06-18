@@ -5,8 +5,8 @@ import { useState, useEffect } from 'react';
 import { vujahdayScript } from '../../fonts';
 import { Create } from './create';
 import { CreateError } from './create-error';
+import { UnicornBackground } from './unicorn-background';
 import { HighDemand } from './high-demand';
-// import { UnicornBackground } from './unicorn-background';
 
 export function Hero() {
     const [isMounted, setIsMounted] = useState(false);
