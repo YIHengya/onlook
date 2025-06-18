@@ -1,5 +1,5 @@
 import { chatToolSet, getCreatePageSystemPrompt, getSystemPrompt, initModel } from '@onlook/ai';
-import { AVAILABLE_MODELS, CLAUDE_MODELS, LLMProvider } from '@onlook/models';
+import { AVAILABLE_MODELS, LLMProvider } from '@onlook/models';
 import { generateObject, NoSuchToolError, streamText } from 'ai';
 import { getProviderApiKey } from '@/utils/api';
 
@@ -21,19 +21,6 @@ function inferProviderFromModelName(modelName: string): LLMProvider {
         return LLMProvider.GOOGLE;
     }
 
-    // OpenAI models - check for gpt prefix and other OpenAI model patterns
-    if (lowerModelName.startsWith('gpt') ||
-        lowerModelName.includes('turbo') ||
-        lowerModelName.startsWith('text-') ||
-        lowerModelName.startsWith('davinci') ||
-        lowerModelName.startsWith('curie') ||
-        lowerModelName.startsWith('babbage') ||
-        lowerModelName.startsWith('ada') ||
-        lowerModelName.startsWith('o1') ||
-        lowerModelName.includes('chatgpt')) {
-        return LLMProvider.OPENAI;
-    }
-
     // Anthropic models - check for claude prefix and model names
     if (lowerModelName.startsWith('claude') ||
         lowerModelName.includes('sonnet') ||
@@ -42,15 +29,15 @@ function inferProviderFromModelName(modelName: string): LLMProvider {
         return LLMProvider.ANTHROPIC;
     }
 
-    // Bedrock models - check for bedrock-specific patterns
-    if (lowerModelName.includes('bedrock') ||
-        lowerModelName.startsWith('us.anthropic') ||
-        lowerModelName.startsWith('amazon.')) {
-        return LLMProvider.BEDROCK;
-    }
+    // Bedrock models - temporarily disabled
+    // if (lowerModelName.includes('bedrock') ||
+    //     lowerModelName.startsWith('us.anthropic') ||
+    //     lowerModelName.startsWith('amazon.')) {
+    //     return LLMProvider.BEDROCK;
+    // }
 
-    // Default to OpenAI for unknown models (most compatible)
-    return LLMProvider.OPENAI;
+    // Default to Anthropic for unknown models (most compatible with current setup)
+    return LLMProvider.ANTHROPIC;
 }
 
 /**
@@ -58,13 +45,13 @@ function inferProviderFromModelName(modelName: string): LLMProvider {
  */
 function getModelConfiguration(aiSettings: any): { provider: LLMProvider; modelName: string } {
     // Get selected model from AI settings
-    const selectedModel = aiSettings?.selectedModel || 'claude-sonnet-4';
+    const selectedModel = aiSettings?.selectedModel || 'gemini-2.5-flash-preview-04-17';
 
     // Find the model configuration from AVAILABLE_MODELS
     const modelConfig = AVAILABLE_MODELS.find(m => m.id === selectedModel);
 
-    let provider = LLMProvider.ANTHROPIC;
-    let modelName: string = CLAUDE_MODELS.SONNET_4;
+    let provider = LLMProvider.GOOGLE;
+    let modelName: string = 'gemini-2.5-flash-preview-04-17';
 
     if (modelConfig && modelConfig.available) {
         // Use predefined model configuration
@@ -77,7 +64,7 @@ function getModelConfiguration(aiSettings: any): { provider: LLMProvider; modelN
         modelName = selectedModel; // Use the custom model name directly
         console.log(`Using custom model: ${selectedModel} with inferred provider: ${provider}`);
     } else {
-        console.log('No model selected, using default Claude Sonnet 4');
+        console.log('No model selected, using default Gemini 2.5 Flash Preview (04-17)');
     }
 
     return { provider, modelName };

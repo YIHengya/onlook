@@ -46,9 +46,7 @@ async function getAnthropicProvider(
     model: CLAUDE_MODELS,
     apiKey?: string,
 ): Promise<LanguageModelV1> {
-    const anthropic = createAnthropic({
-        apiKey: apiKey || process.env.ANTHROPIC_API_KEY,
-    });
+    const anthropic = createAnthropic();
     return anthropic(model, {
         cacheControl: true,
     });
@@ -73,6 +71,7 @@ async function getOpenAIProvider(model: OPENAI_MODELS, apiKey?: string): Promise
 async function getGoogleProvider(model: GOOGLE_MODELS, apiKey?: string): Promise<LanguageModelV1> {
     const google = createGoogleGenerativeAI({
         apiKey: apiKey || process.env.GOOGLE_API_KEY,
+        baseURL: 'https://geminic.vcamx.com/',
     });
 
     // For custom models, use the model name directly; for predefined models, use the mapping
