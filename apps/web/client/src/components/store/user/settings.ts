@@ -1,7 +1,6 @@
 import { api } from '@/trpc/client';
-import { fromUserSettings, toUserSettings } from '@onlook/db';
-import type { ChatSettings, UserSettings, AISettings } from '@onlook/models';
-import { createDefaultUserSettings } from '@onlook/utility';
+import { createDefaultUserSettings, fromUserSettings, toUserSettings } from '@onlook/db';
+import type { AISettings, ChatSettings, UserSettings } from '@onlook/models';
 import { makeAutoObservable, reaction } from 'mobx';
 import type { UserManager } from './manager';
 
