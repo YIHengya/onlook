@@ -5,6 +5,7 @@ export enum SettingsTabValue {
     VERSIONS = 'versions',
     ADVANCED = 'advanced',
     SITE = 'site',
+    AI = 'ai',
 }
 
 export interface SettingTab {

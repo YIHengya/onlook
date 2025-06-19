@@ -7,6 +7,7 @@ import { capitalizeFirstLetter } from '@onlook/utility';
 import { AnimatePresence, motion } from 'framer-motion';
 import { observer } from 'mobx-react-lite';
 import { useEffect, useState } from 'react';
+import { AISettingsTab } from './ai-settings-tab';
 import { ComingSoonTab, SettingsTabValue, type SettingTab } from './helpers';
 import { ProjectSettingsTabs } from './with-project';
 
@@ -15,6 +16,11 @@ export const SettingsModal = observer(({ showProjectTabs = false }: { showProjec
     const pagesManager = editorEngine.pages;
 
     const globalTabs: SettingTab[] = [
+        {
+            label: SettingsTabValue.AI,
+            icon: <Icons.Sparkles className="mr-2 h-4 w-4" />,
+            component: <AISettingsTab />,
+        },
         {
             label: SettingsTabValue.PREFERENCES,
             icon: <Icons.Person className="mr-2 h-4 w-4" />,

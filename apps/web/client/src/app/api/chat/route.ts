@@ -82,11 +82,8 @@ export async function POST(req: Request) {
     // Get model configuration using the dedicated method
     const { provider, modelName } = getModelConfiguration(aiSettings);
 
-    // 获取API密钥
-    const selectedApiKey = await getProviderApiKey(provider.toLowerCase());
-
     // 初始化模型，传入API密钥
-    const model = await initModel(provider, modelName, selectedApiKey || undefined);
+    const model = await initModel(provider, modelName);
  
     const systemPrompt = chatType === ChatType.CREATE ? getCreatePageSystemPrompt() : getSystemPrompt();
 

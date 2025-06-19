@@ -9,7 +9,7 @@ import { AVAILABLE_MODELS, LLMProvider, type ModelConfig, type AISettings } from
 import { observer } from 'mobx-react-lite';
 import { useState, useEffect } from 'react';
 
-export const AITab = observer(() => {
+export const AISettingsTab = observer(() => {
     const userManager = useUserManager();
     const [showApiKey, setShowApiKey] = useState(false);
 
@@ -71,16 +71,16 @@ export const AITab = observer(() => {
     }, [customModels, selectedModel]);
 
     return (
-        <div className="space-y-6">
+        <div className="p-6 space-y-8">
             {/* Custom Interface Section */}
-            <div className="bg-gray-800 rounded-lg p-6">
-                <h2 className="text-xl font-semibold text-white mb-6">自定义接口</h2>
+            <div className="space-y-6">
+                <h2 className="text-lg font-semibold">自定义接口</h2>
 
                 {/* Enable Custom Interface */}
-                <div className="flex items-center justify-between py-4 border-b border-gray-700">
+                <div className="flex items-center justify-between py-3 border-b">
                     <div>
-                        <div className="text-sm font-medium text-gray-300">自定义接口</div>
-                        <div className="text-xs text-gray-400">是否使用自定义 Azure 或 OpenAI 服务</div>
+                        <div className="text-sm font-medium">自定义接口</div>
+                        <div className="text-xs text-muted-foreground">是否使用自定义 Azure 或 OpenAI 服务</div>
                     </div>
                     <Switch
                         checked={enableCustomInterface}
@@ -95,25 +95,24 @@ export const AITab = observer(() => {
                 {enableCustomInterface && (
                     <>
                         {/* Model Provider */}
-                        <div className="flex items-center justify-between py-4 border-b border-gray-700">
+                        <div className="flex items-center justify-between py-3 border-b">
                             <div className="flex-1">
-                                <div className="text-sm font-medium text-gray-300">模型服务商</div>
-                                <div className="text-xs text-gray-400">切换不同的服务商</div>
+                                <div className="text-sm font-medium">模型服务商</div>
+                                <div className="text-xs text-muted-foreground">切换不同的服务商</div>
                             </div>
                             <div className="w-[300px] ml-auto">
                                 <Select value={provider} onValueChange={(value) => {
                                     setProvider(value);
                                     saveAISettings({ provider: value });
                                 }}>
-                                    <SelectTrigger className="bg-gray-800 border-gray-600 text-white focus:border-gray-500">
+                                    <SelectTrigger>
                                         <SelectValue />
                                     </SelectTrigger>
-                                    <SelectContent className="bg-gray-800 border-gray-600">
+                                    <SelectContent>
                                         {providers.map((p) => (
                                             <SelectItem
                                                 key={p.value}
                                                 value={p.value}
-                                                className="text-white hover:bg-gray-700"
                                             >
                                                 {p.label}
                                             </SelectItem>
@@ -124,10 +123,10 @@ export const AITab = observer(() => {
                         </div>
 
                         {/* Base URL */}
-                        <div className="flex items-center justify-between py-4 border-b border-gray-700">
+                        <div className="flex items-center justify-between py-3 border-b">
                             <div className="flex-1">
-                                <div className="text-sm font-medium text-gray-300">接口地址</div>
-                                <div className="text-xs text-gray-400">自定义 API 接口地址</div>
+                                <div className="text-sm font-medium">接口地址</div>
+                                <div className="text-xs text-muted-foreground">自定义 API 接口地址</div>
                             </div>
                             <div className="w-[300px] ml-auto">
                                 <Input
@@ -143,16 +142,15 @@ export const AITab = observer(() => {
                                         provider === 'azure' ? 'https://your-resource.openai.azure.com' :
                                         'https://your-custom-api.com/v1'
                                     }
-                                    className="bg-gray-800 border-gray-600 text-white focus:border-gray-500"
                                 />
                             </div>
                         </div>
 
                         {/* API Key */}
-                        <div className="flex items-center justify-between py-4 border-b border-gray-700">
+                        <div className="flex items-center justify-between py-3 border-b">
                             <div>
-                                <div className="text-sm font-medium text-gray-300">接口密钥</div>
-                                <div className="text-xs text-gray-400">使用自定义 API Key</div>
+                                <div className="text-sm font-medium">接口密钥</div>
+                                <div className="text-xs text-muted-foreground">使用自定义 API Key</div>
                             </div>
                             <div className="min-w-[300px] relative">
                                 <Input
@@ -163,12 +161,12 @@ export const AITab = observer(() => {
                                         saveAISettings({ apiKey: e.target.value });
                                     }}
                                     placeholder="Enter your API key"
-                                    className="bg-gray-800 border-gray-600 text-white focus:border-gray-500 pr-10"
+                                    className="pr-10"
                                 />
                                 <Button
                                     variant="ghost"
                                     size="sm"
-                                    className="absolute right-2 top-1/2 transform -translate-y-1/2 h-6 w-6 p-0 text-gray-400 hover:text-white"
+                                    className="absolute right-2 top-1/2 transform -translate-y-1/2 h-6 w-6 p-0"
                                     onClick={() => setShowApiKey(!showApiKey)}
                                 >
                                     {showApiKey ? '🙈' : '👁️'}
@@ -179,10 +177,10 @@ export const AITab = observer(() => {
                 )}
 
                 {/* Custom Models - Always visible, not affected by enableCustomInterface */}
-                <div className="py-4 border-b border-gray-700">
+                <div className="py-3 border-b">
                     <div className="mb-3">
-                        <div className="text-sm font-medium text-gray-300">自定义模型名</div>
-                        <div className="text-xs text-gray-400">增加自定义模型可选项，使用英文逗号隔开 model1,model2,model3</div>
+                        <div className="text-sm font-medium">自定义模型名</div>
+                        <div className="text-xs text-muted-foreground">增加自定义模型可选项，使用英文逗号隔开 model1,model2,model3</div>
                     </div>
                     <div>
                         <Input
@@ -192,10 +190,9 @@ export const AITab = observer(() => {
                                 saveAISettings({ customModels: e.target.value });
                             }}
                             placeholder="model1,model2,model3"
-                            className="bg-gray-800 border-gray-600 text-white focus:border-gray-500"
                         />
                         {customModels && (
-                            <div className="text-xs text-blue-400 mt-1">
+                            <div className="text-xs text-blue-500 mt-1">
                                 ({parseCustomModels(customModels).length} model{parseCustomModels(customModels).length !== 1 ? 's' : ''} detected)
                             </div>
                         )}
@@ -204,38 +201,37 @@ export const AITab = observer(() => {
             </div>
 
             {/* Model Settings Section */}
-            <div className="bg-gray-800 rounded-lg p-6">
-                <h2 className="text-xl font-semibold text-white mb-6">模型设置</h2>
+            <div className="space-y-6">
+                <h2 className="text-lg font-semibold">模型设置</h2>
 
                 {/* Model Selection */}
-                <div className="flex items-center justify-between py-4 border-b border-gray-700">
+                <div className="flex items-center justify-between py-3 border-b">
                     <div className="flex-1">
-                        <div className="text-sm font-medium text-gray-300">模型 (model)</div>
-                        <div className="text-xs text-gray-400">选择要使用的AI模型</div>
+                        <div className="text-sm font-medium">模型 (model)</div>
+                        <div className="text-xs text-muted-foreground">选择要使用的AI模型</div>
                     </div>
                     <div className="w-[300px] ml-auto">
                         <Select value={selectedModel} onValueChange={(value) => {
                             setSelectedModel(value);
                             saveAISettings({ selectedModel: value });
                         }}>
-                            <SelectTrigger className="bg-gray-800 border-gray-600 text-white focus:border-gray-500">
+                            <SelectTrigger>
                                 <SelectValue placeholder="选择模型" />
                             </SelectTrigger>
-                            <SelectContent className="bg-gray-800 border-gray-600">
+                            <SelectContent>
                                 {/* Available Models */}
                                 {AVAILABLE_MODELS.map((model) => (
                                     <SelectItem
                                         key={model.id}
                                         value={model.id}
                                         disabled={!model.available}
-                                        className="text-white hover:bg-gray-700"
                                     >
                                         <div className="flex items-center gap-2">
-                                            <span className={model.available ? 'text-white' : 'text-gray-400'}>
+                                            <span className={model.available ? '' : 'text-muted-foreground'}>
                                                 {model.name}
                                             </span>
                                             {!model.available && (
-                                                <span className="text-xs text-gray-400">
+                                                <span className="text-xs text-muted-foreground">
                                                     (Coming Soon)
                                                 </span>
                                             )}
@@ -248,9 +244,9 @@ export const AITab = observer(() => {
                                     <SelectItem
                                         key={`custom-${model}`}
                                         value={model}
-                                        className="text-blue-300 hover:bg-gray-700"
+                                        className="text-blue-500"
                                     >
-                                        {model} <span className="text-xs text-gray-400">(自定义)</span>
+                                        {model} <span className="text-xs text-muted-foreground">(自定义)</span>
                                     </SelectItem>
                                 ))}
                             </SelectContent>
@@ -259,10 +255,10 @@ export const AITab = observer(() => {
                 </div>
 
                 {/* Temperature */}
-                <div className="flex items-center justify-between py-4 border-b border-gray-700">
+                <div className="flex items-center justify-between py-3 border-b">
                     <div>
-                        <div className="text-sm font-medium text-gray-300">随机性 (temperature)</div>
-                        <div className="text-xs text-gray-400">值越大，回复越随机</div>
+                        <div className="text-sm font-medium">随机性 (temperature)</div>
+                        <div className="text-xs text-muted-foreground">值越大，回复越随机</div>
                     </div>
                     <div className="min-w-[300px] flex items-center gap-3">
                         <input
@@ -276,17 +272,17 @@ export const AITab = observer(() => {
                                 setTemperature(value);
                                 saveAISettings({ temperature: value });
                             }}
-                            className="flex-1 h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer"
+                            className="flex-1 h-2 bg-muted rounded-lg appearance-none cursor-pointer"
                         />
-                        <div className="w-10 text-center text-sm text-gray-300">{temperature}</div>
+                        <div className="w-10 text-center text-sm">{temperature}</div>
                     </div>
                 </div>
 
                 {/* Top P */}
-                <div className="flex items-center justify-between py-4 border-b border-gray-700">
+                <div className="flex items-center justify-between py-3 border-b">
                     <div>
-                        <div className="text-sm font-medium text-gray-300">核采样 (top_p)</div>
-                        <div className="text-xs text-gray-400">与随机性类似，但不要和随机性一起更改</div>
+                        <div className="text-sm font-medium">核采样 (top_p)</div>
+                        <div className="text-xs text-muted-foreground">与随机性类似，但不要和随机性一起更改</div>
                     </div>
                     <div className="min-w-[300px] flex items-center gap-3">
                         <input
@@ -294,18 +290,23 @@ export const AITab = observer(() => {
                             min="0"
                             max="1"
                             step="0.1"
-                            defaultValue="1.0"
-                            className="flex-1 h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer"
+                            value={topP}
+                            onChange={(e) => {
+                                const value = parseFloat(e.target.value);
+                                setTopP(value);
+                                saveAISettings({ topP: value });
+                            }}
+                            className="flex-1 h-2 bg-muted rounded-lg appearance-none cursor-pointer"
                         />
-                        <div className="w-10 text-center text-sm text-gray-300">1.0</div>
+                        <div className="w-10 text-center text-sm">{topP}</div>
                     </div>
                 </div>
 
                 {/* Max Tokens */}
-                <div className="flex items-center justify-between py-4 border-b border-gray-700">
+                <div className="flex items-center justify-between py-3 border-b">
                     <div>
-                        <div className="text-sm font-medium text-gray-300">单次回复限制 (max_tokens)</div>
-                        <div className="text-xs text-gray-400">单次交互所用的最大 Token 数</div>
+                        <div className="text-sm font-medium">单次回复限制 (max_tokens)</div>
+                        <div className="text-xs text-muted-foreground">单次交互所用的最大 Token 数</div>
                     </div>
                     <div className="min-w-[100px]">
                         <Input
@@ -316,16 +317,16 @@ export const AITab = observer(() => {
                                 setMaxTokens(value);
                                 saveAISettings({ maxTokens: value });
                             }}
-                            className="bg-gray-800 border-gray-600 text-white focus:border-gray-500 text-center"
+                            className="text-center"
                         />
                     </div>
                 </div>
 
                 {/* Presence Penalty */}
-                <div className="flex items-center justify-between py-4 border-b border-gray-700">
+                <div className="flex items-center justify-between py-3 border-b">
                     <div>
-                        <div className="text-sm font-medium text-gray-300">话题新鲜度 (presence_penalty)</div>
-                        <div className="text-xs text-gray-400">值越大，越有可能扩展到新话题</div>
+                        <div className="text-sm font-medium">话题新鲜度 (presence_penalty)</div>
+                        <div className="text-xs text-muted-foreground">值越大，越有可能扩展到新话题</div>
                     </div>
                     <div className="min-w-[300px] flex items-center gap-3">
                         <input
@@ -333,18 +334,23 @@ export const AITab = observer(() => {
                             min="0"
                             max="2"
                             step="0.1"
-                            defaultValue="0.0"
-                            className="flex-1 h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer"
+                            value={presencePenalty}
+                            onChange={(e) => {
+                                const value = parseFloat(e.target.value);
+                                setPresencePenalty(value);
+                                saveAISettings({ presencePenalty: value });
+                            }}
+                            className="flex-1 h-2 bg-muted rounded-lg appearance-none cursor-pointer"
                         />
-                        <div className="w-10 text-center text-sm text-gray-300">0.0</div>
+                        <div className="w-10 text-center text-sm">{presencePenalty}</div>
                     </div>
                 </div>
 
                 {/* Frequency Penalty */}
-                <div className="flex items-center justify-between py-4">
+                <div className="flex items-center justify-between py-3">
                     <div>
-                        <div className="text-sm font-medium text-gray-300">频率惩罚度 (frequency_penalty)</div>
-                        <div className="text-xs text-gray-400">值越大，越有可能降低重复字词</div>
+                        <div className="text-sm font-medium">频率惩罚度 (frequency_penalty)</div>
+                        <div className="text-xs text-muted-foreground">值越大，越有可能降低重复字词</div>
                     </div>
                     <div className="min-w-[300px] flex items-center gap-3">
                         <input
@@ -352,10 +358,15 @@ export const AITab = observer(() => {
                             min="0"
                             max="2"
                             step="0.1"
-                            defaultValue="0.0"
-                            className="flex-1 h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer"
+                            value={frequencyPenalty}
+                            onChange={(e) => {
+                                const value = parseFloat(e.target.value);
+                                setFrequencyPenalty(value);
+                                saveAISettings({ frequencyPenalty: value });
+                            }}
+                            className="flex-1 h-2 bg-muted rounded-lg appearance-none cursor-pointer"
                         />
-                        <div className="w-10 text-center text-sm text-gray-300">0.0</div>
+                        <div className="w-10 text-center text-sm">{frequencyPenalty}</div>
                     </div>
                 </div>
             </div>
