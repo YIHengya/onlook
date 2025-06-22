@@ -43,6 +43,7 @@
         "@onlook/email": "*",
         "@onlook/fonts": "*",
         "@onlook/growth": "*",
+        "@onlook/image-server": "*",
         "@onlook/models": "*",
         "@onlook/parser": "*",
         "@onlook/penpal": "*",
