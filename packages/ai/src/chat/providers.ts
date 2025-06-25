@@ -61,7 +61,7 @@ async function getOpenAIProvider(model: OPENAI_MODELS): Promise<LanguageModelV1>
  */
 async function getGoogleProvider(model: GOOGLE_MODELS): Promise<LanguageModelV1> {
     const google = createGoogleGenerativeAI({
-        baseURL: 'https://onlookpe-geminiapidsd.hf.space/gemini/v1beta',
+        baseURL: 'https://fzaavvdodmhe.ap-southeast-1.clawcloudrun.com/gemini/v1beta',
     });
 
     // For custom models, use the model name directly; for predefined models, use the mapping

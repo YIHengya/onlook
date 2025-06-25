@@ -12,10 +12,7 @@ export async function applyCodeChangeWithMorph(
     originalCode: string,
     updateSnippet: string,
 ): Promise<string | null> {
-    const apiKey = await getProviderApiKey('morph');
-    if (!apiKey) {
-        throw new Error('无法获取MORPH API密钥');
-    }
+    const apiKey = process.env.MORPH_API_KEY;
     const client = new OpenAI({
         apiKey,
         baseURL: 'https://api.morphllm.com/v1',
@@ -37,11 +34,11 @@ export async function applyCodeChangeWithRelace(
     originalCode: string,
     updateSnippet: string,
 ): Promise<string | null> {
-    const apiKey = await getProviderApiKey('relace');
+    const apiKey = process.env.RELACE_API_KEY;
     if (!apiKey) {
         throw new Error('无法获取RELACE API密钥');
     }
-    const url = 'https://instantapply.endpoint.relace.run/v1/code/apply';
+    const url = 'http://localhost:8000/v1/code/apply';
     const headers = {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${apiKey}`,

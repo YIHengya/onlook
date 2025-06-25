@@ -17388,9 +17388,5 @@ export {
   penpalParent
 };
 
-<<<<<<< HEAD
-//# debugId=C784B58B29EBE3CC64756E2164756E21
-=======
-//# debugId=1AB6CAD0F6D87DB364756E2164756E21
->>>>>>> d52a2da6ddf1bfe3ceebde72f416bc9544612ed9
+//# debugId=C4CF37F46D34C83764756E2164756E21
 //# sourceMappingURL=index.js.map
