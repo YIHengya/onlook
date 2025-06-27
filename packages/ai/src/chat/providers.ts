@@ -2,6 +2,7 @@ import { bedrock } from '@ai-sdk/amazon-bedrock';
 import { createAnthropic } from '@ai-sdk/anthropic';
 import { createGoogleGenerativeAI } from '@ai-sdk/google';
 import { createOpenAI } from '@ai-sdk/openai';
+import { createVertexAnthropic } from '@ai-sdk/google-vertex';
 import {
     BEDROCK_MODELS,
     BEDROCK_MODEL_MAP,
@@ -9,6 +10,7 @@ import {
     GOOGLE_MODELS,
     LLMProvider,
     OPENAI_MODELS,
+    VERTEX_MODEL_MAP,
 } from '@onlook/models';
 import { assertNever } from '@onlook/utility';
 import { type LanguageModelV1 } from 'ai';
@@ -30,6 +32,8 @@ export async function initModel(provider: LLMProvider, model: string): Promise<L
             return await getGoogleProvider(model as GOOGLE_MODELS);
         case LLMProvider.BEDROCK:
             return await getBedrockProvider(model as BEDROCK_MODELS);
+        case LLMProvider.GOOGLE_VERTEX:
+            return await getVertexProvider(model as CLAUDE_MODELS);
         default:
             assertNever(provider);
     }
@@ -81,4 +85,27 @@ async function getBedrockProvider(model: BEDROCK_MODELS): Promise<LanguageModelV
     // Use the Bedrock model mapping to get the full model ID
     const modelId = BEDROCK_MODEL_MAP[model] || model;
     return bedrock(modelId);
+}
+
+async function getVertexProvider(model: CLAUDE_MODELS) {
+    if (
+        !process.env.GOOGLE_CLIENT_EMAIL ||
+        !process.env.GOOGLE_PRIVATE_KEY ||
+        !process.env.GOOGLE_PROJECT_ID ||
+        !process.env.GOOGLE_LOCATION
+    ) {
+        throw new Error(
+            'GOOGLE_CLIENT_EMAIL, GOOGLE_PRIVATE_KEY, GOOGLE_PROJECT_ID, and GOOGLE_LOCATION must be set',
+        );
+    }
+
+    const vertexModel = VERTEX_MODEL_MAP[model];
+    return createVertexAnthropic({
+        project: process.env.GOOGLE_PROJECT_ID,
+        location: process.env.GOOGLE_LOCATION,
+        googleCredentials: {
+            clientEmail: process.env.GOOGLE_CLIENT_EMAIL,
+            privateKey: process.env.GOOGLE_PRIVATE_KEY,
+        },
+    })(vertexModel);
 }

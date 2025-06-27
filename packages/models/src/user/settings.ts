@@ -1,6 +1,7 @@
 export interface UserSettings {
     id: string;
     chat: ChatSettings;
+    editor: EditorSettings;
     ai?: AISettings;
 }
 
@@ -9,6 +10,10 @@ export interface ChatSettings {
     autoApplyCode: boolean;
     expandCodeBlocks: boolean;
     showMiniChat: boolean;
+}
+
+export interface EditorSettings {
+    shouldWarnDelete: boolean;
 }
 
 export interface AISettings {

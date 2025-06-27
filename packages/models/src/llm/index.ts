@@ -3,6 +3,7 @@ export enum LLMProvider {
     OPENAI = 'openai',
     GOOGLE = 'google',
     BEDROCK = 'bedrock',
+    GOOGLE_VERTEX = 'google-vertex',
 }
 
 export enum CLAUDE_MODELS {
@@ -39,9 +40,15 @@ export enum BEDROCK_MODELS {
 
 // Bedrock model mapping to full model IDs
 export const BEDROCK_MODEL_MAP = {
-    [BEDROCK_MODELS.CLAUDE_SONNET_4]: 'us.anthropic.claude-sonnet-4-20250514-v1:0',
-    [BEDROCK_MODELS.CLAUDE_SONNET_3_7]: 'us.anthropic.claude-3-7-sonnet-20250219-v1:0',
-    [BEDROCK_MODELS.CLAUDE_HAIKU]: 'us.anthropic.claude-3-5-haiku-20241022-v1:0',
+    [CLAUDE_MODELS.SONNET_4]: 'us.anthropic.claude-sonnet-4-20250514-v1:0',
+    [CLAUDE_MODELS.SONNET_3_7]: 'us.anthropic.claude-3-7-sonnet-20250219-v1:0',
+    [CLAUDE_MODELS.HAIKU]: 'us.anthropic.claude-3-5-haiku-20241022-v1:0',
+};
+
+export const VERTEX_MODEL_MAP = {
+    [CLAUDE_MODELS.SONNET_4]: 'claude-sonnet-4@20250514',
+    [CLAUDE_MODELS.SONNET_3_7]: 'claude-3-7-sonnet@20250219',
+    [CLAUDE_MODELS.HAIKU]: 'claude-3-5-haiku@20241022',
 } as const;
 
 // Model display configuration

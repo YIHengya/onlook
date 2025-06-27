@@ -23,5 +23,6 @@ export const createDefaultUserSettings = (userId: string): DbUserSettings => {
         aiPresencePenalty: 0.0,
         aiFrequencyPenalty: 0.0,
         aiEnableCustomInterface: true,
+        shouldWarnDelete: DefaultSettings.EDITOR_SETTINGS.shouldWarnDelete,
     };
 };
