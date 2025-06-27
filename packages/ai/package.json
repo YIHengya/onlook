@@ -31,7 +31,6 @@
         "@onlook/typescript": "*"
     },
     "dependencies": {
-        "@ai-sdk/amazon-bedrock": "^1.2.10",
         "@ai-sdk/anthropic": "^1.2.12",
         "@ai-sdk/google": "^1.2.19",
         "@ai-sdk/google-vertex": "2.2.24",

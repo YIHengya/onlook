@@ -2,7 +2,7 @@ import { bedrock } from '@ai-sdk/amazon-bedrock';
 import { createAnthropic } from '@ai-sdk/anthropic';
 import { createGoogleGenerativeAI } from '@ai-sdk/google';
 import { createOpenAI } from '@ai-sdk/openai';
-import { createVertexAnthropic } from '@ai-sdk/google-vertex';
+import { createVertexAnthropic } from '@ai-sdk/google-vertex/anthropic/edge';
 import {
     BEDROCK_MODELS,
     BEDROCK_MODEL_MAP,

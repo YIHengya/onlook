@@ -4,7 +4,6 @@ import { chatToolSet, getCreatePageSystemPrompt, getSystemPrompt, initModel } fr
 import { AVAILABLE_MODELS, ChatType, CLAUDE_MODELS, LLMProvider, type Usage, UsageType } from '@onlook/models';
 import { generateObject, NoSuchToolError, streamText } from 'ai';
 import { type NextRequest } from 'next/server';
-import { getProviderApiKey } from '@/utils/api';
 
 /**
  * Infer the provider from a custom model name based on common prefixes
