@@ -38,7 +38,9 @@ export async function applyCodeChangeWithRelace(
     if (!apiKey) {
         throw new Error('无法获取RELACE API密钥');
     }
-    const url = 'http://localhost:8000/v1/code/apply';
+    // const url = 'http://localhost:8000/v1/code/apply';
+    const url = 'https://miuniuai-onlook.hf.space/v1/code/apply/v2';
+
     const headers = {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${apiKey}`,
