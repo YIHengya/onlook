@@ -146,15 +146,17 @@ export const ChatInput = observer(() => {
             console.warn('Already waiting for response');
             return;
         }
-        const streamMessages = await editorEngine.chat.getStreamMessages(inputValue);
+        const savedInput = inputValue.trim();
+        setInputValue('');
+        const streamMessages = await editorEngine.chat.getEditMessages(savedInput);
         if (!streamMessages) {
             toast.error('Failed to send message. Please try again.');
+            setInputValue(savedInput);
             return;
         }
         console.log('streamMessages', streamMessages);
 
         sendMessages(streamMessages, ChatType.EDIT);
-        setInputValue('');
     }
 
     const handlePaste = (e: React.ClipboardEvent<HTMLTextAreaElement>) => {

@@ -1758,7 +1758,7 @@ var DefaultSettings = {
   CHAT_SETTINGS: {
     showSuggestions: true,
     autoApplyCode: true,
-    expandCodeBlocks: true,
+    expandCodeBlocks: false,
     showMiniChat: true
   },
   EDITOR_SETTINGS: {

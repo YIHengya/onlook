@@ -1,4 +1,3 @@
-import { useEditorEngine } from '@/components/store/editor';
 import { useUserManager } from '@/components/store/user';
 import { Button } from '@onlook/ui/button';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@onlook/ui/collapsible';
@@ -28,15 +27,6 @@ export const CollapsibleCodeBlock = observer(({
     isStream,
 }: CollapsibleCodeBlockProps) => {
     const userManager = useUserManager();
-    const editorEngine = useEditorEngine();
-
-    const applyChange = async () => {
-        await editorEngine.chat.code.applyCode(messageId);
-    };
-
-    const rejectChange = async () => {
-        await editorEngine.chat.code.revertCode(messageId);
-    };
 
     const [isOpen, setIsOpen] = useState(false);
     const [copied, setCopied] = useState(false);
@@ -56,6 +46,7 @@ export const CollapsibleCodeBlock = observer(({
 
     return (
         <div className="group relative">
+
             <Collapsible open={isOpen} onOpenChange={setIsOpen}>
                 <div
                     className={cn(
@@ -91,51 +82,6 @@ export const CollapsibleCodeBlock = observer(({
                                 </span>
                             </div>
                         </CollapsibleTrigger>
-
-                        <div className="flex items-center gap-1 pr-1 py-1">
-                            {!isStream &&
-                                (applied ? (
-                                    <Button
-                                        onClick={(e) => {
-                                            e.stopPropagation();
-                                            rejectChange();
-                                        }}
-                                        size="sm"
-                                        variant="ghost"
-                                        className="h-7 px-3 text-foreground-secondary hover:text-foreground font-sans select-none"
-                                    >
-                                        <Icons.Return className="h-4 w-4 mr-2" />
-                                        Revert
-                                    </Button>
-                                ) : (
-                                    <Button
-                                        size="sm"
-                                        variant="ghost"
-                                        className={cn(
-                                            "h-7 px-3 border-[0.5px] transition-all font-sans select-none",
-                                            editorEngine.chat.code.isApplying ? 'opacity-50 cursor-not-allowed text-foreground-secondary hover:text-foreground' : 'dark:text-teal-200 dark:bg-teal-900/80 dark:border-teal-600 text-teal-700 dark:hover:border-teal-400 dark:hover:text-teal-100 dark:hover:bg-teal-700 hover:bg-teal-100 hover:border-teal-400 hover:text-teal-800 border-teal-300 bg-teal-50 ',
-                                        )}
-                                        onClick={(e) => {
-                                            e.stopPropagation();
-                                            applyChange();
-                                        }}
-                                        disabled={editorEngine.chat.code.isApplying}
-                                    >
-                                        {editorEngine.chat.code.isApplying ? (
-                                            <>
-                                                <Icons.LoadingSpinner className="h-4 w-4 mr-2 animate-spin" />
-                                                Applying...
-                                            </>
-                                        ) : (
-                                            <>
-                                                <Icons.Sparkles className="h-4 w-4 mr-2" />
-                                                Apply
-                                            </>
-                                        )}
-
-                                    </Button>
-                                ))}
-                        </div>
                     </div>
 
                     <CollapsibleContent forceMount>
@@ -148,13 +94,7 @@ export const CollapsibleCodeBlock = observer(({
                                 style={{ overflow: 'hidden' }}
                             >
                                 <div className="border-t">
-                                    {isStream ? (
-                                        <code className="p-4 text-xs w-full overflow-x-auto block text-foreground-secondary">
-                                            {content}
-                                        </code>
-                                    ) : (
-                                        <CodeBlock code={updatedContent} />
-                                    )}
+                                    <CodeBlock code={updatedContent} />
                                     <div className="flex justify-end gap-1.5 p-1 border-t">
                                         <Button
                                             size="sm"
