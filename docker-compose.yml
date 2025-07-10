@@ -1,0 +1,12 @@
+version: '3.8'
+
+services:
+  onlook:
+    build: .
+    ports:
+      - "5874:3000"
+    env_file:
+      - .env
+    environment:
+      - NODE_ENV=production
+    restart: unless-stopped
