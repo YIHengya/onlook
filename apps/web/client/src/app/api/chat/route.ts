@@ -1,7 +1,7 @@
 import { createClient as createTRPCClient } from '@/trpc/request-server';
 import { createClient as createSupabaseClient } from '@/utils/supabase/request-server';
 import { askToolSet, buildToolSet, getAskModeSystemPrompt, getCreatePageSystemPrompt, getSystemPrompt, initModel } from '@onlook/ai';
-import { ChatType, CLAUDE_MODELS, LLMProvider, type Usage, UsageType } from '@onlook/models';
+import { ChatType, CLAUDE_MODELS, GEMINI_MODELS, LLMProvider, type Usage, UsageType } from '@onlook/models';
 import { generateObject, NoSuchToolError, streamText } from 'ai';
 import { type NextRequest } from 'next/server';
 
@@ -84,8 +84,8 @@ export const getSupabaseUser = async (request: NextRequest) => {
 export const streamResponse = async (req: NextRequest) => {
     const { messages, maxSteps, chatType } = await req.json();
     const { model, providerOptions } = await initModel({
-        provider: LLMProvider.ANTHROPIC,
-        model: CLAUDE_MODELS.SONNET_4,
+        provider: LLMProvider.GOOGLE_AI_STUDIO,
+        model: GEMINI_MODELS.GEMINI_2_5_FLASH,
     });
 
     let systemPrompt: string;

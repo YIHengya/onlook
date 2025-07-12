@@ -13,7 +13,7 @@ export function Hero() {
 
     return (
         <div className="w-full h-full flex flex-col items-center justify-center gap-12 p-8 text-lg text-center relative">
-            <UnicornBackground />
+            {/* <UnicornBackground /> */}
             <div className="flex flex-col gap-3 items-center relative z-20 pt-4 pb-2">
                 <motion.h1
                     className="text-6xl font-light leading-tight text-center !leading-[0.9]"
@@ -62,7 +62,7 @@ export function Hero() {
                 </motion.div>
             </div>
             <div className="sm:hidden text-balance flex flex-col gap-4 items-center relative z-20 px-10">
-                Onlook isn't ready for Mobile – Please open on a larger screen
+                Onlook isn&apos;t ready for Mobile – Please open on a larger screen
             </div>
         </div>
     );

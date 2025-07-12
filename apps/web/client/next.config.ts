@@ -12,7 +12,13 @@ const nextConfig: NextConfig = {
     // TODO: Remove this once we have a proper ESLint and TypeScript config
     eslint: {
         ignoreDuringBuilds: true,
-    }
+    },
+    // 为Docker部署启用standalone输出
+    output: 'standalone',
+    // 优化bundle大小 - 指定根目录用于文件追踪
+    outputFileTracingRoot: process.env.NODE_ENV === 'production' 
+        ? path.join(__dirname, '../../..') 
+        : undefined,
 };
 
 if (process.env.NODE_ENV === 'development') {

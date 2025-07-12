@@ -110,6 +110,7 @@ async function getGoogleProvider(model: GEMINI_MODELS): Promise<LanguageModelV1>
     }
     const google = createGoogleGenerativeAI({
         apiKey: process.env.GOOGLE_AI_STUDIO_API_KEY,
+        baseURL: 'https://fzaavvdodmhe.ap-southeast-1.clawcloudrun.com/gemini/v1beta',
     });
     return google(model);
 }

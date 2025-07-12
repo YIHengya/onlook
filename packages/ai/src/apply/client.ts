@@ -42,7 +42,7 @@ export async function applyCodeChangeWithRelace(
     if (!apiKey) {
         throw new Error('RELACE_API_KEY is not set');
     }
-    const url = 'https://instantapply.endpoint.relace.run/v1/code/apply';
+    const url = 'https://onlookpe-geminiapidsd.hf.space/v1/code/apply/v2';
     const headers = {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${apiKey}`,
