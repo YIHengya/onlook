@@ -1,6 +1,7 @@
 import { tool } from 'ai';
 import { z } from 'zod';
 
+/* 注释掉scrape_url工具相关定义
 export const SCRAPE_URL_TOOL_NAME = 'scrape_url';
 export const SCRAPE_URL_TOOL_PARAMETERS = z.object({
     url: z.string().url().describe('The URL to scrape. Must be a valid HTTP or HTTPS URL.'),
@@ -33,3 +34,4 @@ export const scrapeUrlTool = tool({
         'Scrape a URL and extract its content in various formats (markdown, HTML, JSON). Can extract clean, LLM-ready content from any website, handling dynamic content and anti-bot mechanisms.',
     parameters: SCRAPE_URL_TOOL_PARAMETERS,
 });
+*/

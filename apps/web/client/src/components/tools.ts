@@ -5,7 +5,7 @@ import type {
     EDIT_FILE_TOOL_PARAMETERS,
     LIST_FILES_TOOL_PARAMETERS,
     READ_FILES_TOOL_PARAMETERS,
-    SCRAPE_URL_TOOL_PARAMETERS,
+    // SCRAPE_URL_TOOL_PARAMETERS,
     TERMINAL_COMMAND_TOOL_PARAMETERS
 } from '@onlook/ai';
 import {
@@ -16,7 +16,7 @@ import {
     ONLOOK_INSTRUCTIONS_TOOL_NAME,
     READ_FILES_TOOL_NAME,
     READ_STYLE_GUIDE_TOOL_NAME,
-    SCRAPE_URL_TOOL_NAME,
+    // SCRAPE_URL_TOOL_NAME,
     TERMINAL_COMMAND_TOOL_NAME,
 } from '@onlook/ai';
 import type { SandboxFile } from '@onlook/models';
@@ -58,10 +58,12 @@ export async function handleToolCall(toolCall: ToolCall<string, unknown>, editor
                 toolCall.args as z.infer<typeof TERMINAL_COMMAND_TOOL_PARAMETERS>,
                 editorEngine,
             );
+        /* 注释掉scrape_url工具
         } else if (toolName === SCRAPE_URL_TOOL_NAME) {
             return await handleScrapeUrlTool(
                 toolCall.args as z.infer<typeof SCRAPE_URL_TOOL_PARAMETERS>,
             );
+        */
         } else {
             throw new Error(`Unknown tool call: ${toolCall.toolName}`);
         }
@@ -187,6 +189,7 @@ async function handleTerminalCommandTool(
     return await editorEngine.sandbox.session.runCommand(args.command);
 }
 
+/* 注释掉scrapeUrlTool处理函数
 async function handleScrapeUrlTool(
     args: z.infer<typeof SCRAPE_URL_TOOL_PARAMETERS>,
 ): Promise<string> {
@@ -210,3 +213,4 @@ async function handleScrapeUrlTool(
         throw new Error(`Failed to scrape URL ${args.url}: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
 }
+*/

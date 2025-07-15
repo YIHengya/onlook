@@ -86,6 +86,12 @@ export const streamResponse = async (req: NextRequest) => {
     const { model, providerOptions } = await initModel({
         provider: LLMProvider.GOOGLE_AI_STUDIO,
         model: GEMINI_MODELS.GEMINI_2_5_PRO,
+        // 添加Google Search工具配置
+        providerOptions: {
+            tools: [{
+                googleSearch: {}
+            }]
+        }
     });
 
     let systemPrompt: string;

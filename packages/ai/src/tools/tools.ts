@@ -17,7 +17,8 @@ import {
     READ_STYLE_GUIDE_TOOL_NAME,
     readStyleGuideTool,
 } from './guides';
-import { SCRAPE_URL_TOOL_NAME, scrapeUrlTool } from './web';
+// 注释掉scrape_url工具导入
+// import { SCRAPE_URL_TOOL_NAME, scrapeUrlTool } from './web';
 
 export const buildToolSet: ToolSet = {
     [LIST_FILES_TOOL_NAME]: listFilesTool,
@@ -27,7 +28,8 @@ export const buildToolSet: ToolSet = {
     [EDIT_FILE_TOOL_NAME]: editFileTool,
     [CREATE_FILE_TOOL_NAME]: createFileTool,
     [TERMINAL_COMMAND_TOOL_NAME]: terminalCommandTool,
-    [SCRAPE_URL_TOOL_NAME]: scrapeUrlTool,
+    // 注释掉scrape_url工具
+    // [SCRAPE_URL_TOOL_NAME]: scrapeUrlTool,
 };
 
 export const askToolSet: ToolSet = {
@@ -35,5 +37,6 @@ export const askToolSet: ToolSet = {
     [READ_FILES_TOOL_NAME]: readFilesTool,
     [ONLOOK_INSTRUCTIONS_TOOL_NAME]: onlookInstructionsTool,
     [READ_STYLE_GUIDE_TOOL_NAME]: readStyleGuideTool,
-    [SCRAPE_URL_TOOL_NAME]: scrapeUrlTool,
+    // 注释掉scrape_url工具
+    // [SCRAPE_URL_TOOL_NAME]: scrapeUrlTool,
 };

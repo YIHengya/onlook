@@ -5,7 +5,7 @@ import {
     ONLOOK_INSTRUCTIONS_TOOL_NAME,
     READ_FILES_TOOL_NAME,
     READ_STYLE_GUIDE_TOOL_NAME,
-    SCRAPE_URL_TOOL_NAME,
+    // SCRAPE_URL_TOOL_NAME,
     TERMINAL_COMMAND_TOOL_NAME
 } from '@onlook/ai';
 import { Icons } from '@onlook/ui/icons';
@@ -21,7 +21,7 @@ const TOOL_ICONS: Record<string, any> = {
     [EDIT_FILE_TOOL_NAME]: Icons.Pencil,
     [CREATE_FILE_TOOL_NAME]: Icons.FilePlus,
     [TERMINAL_COMMAND_TOOL_NAME]: Icons.Terminal,
-    [SCRAPE_URL_TOOL_NAME]: Icons.Globe,
+    // [SCRAPE_URL_TOOL_NAME]: Icons.Globe,
 };
 
 export function ToolCallSimple({
@@ -70,6 +70,7 @@ export function ToolCallSimple({
                 label = "Reading style guide";
             } else if (toolName === ONLOOK_INSTRUCTIONS_TOOL_NAME) {
                 label = "Reading Onlook instructions";
+            /* 注释掉scrape_url相关代码
             } else if (toolName === SCRAPE_URL_TOOL_NAME) {
                 if (toolInvocation.args && 'url' in toolInvocation.args) {
                     try {
@@ -81,6 +82,7 @@ export function ToolCallSimple({
                 } else {
                     label = "Visiting URL";
                 }
+            */
             } else {
                 label = toolName.replace(/[-_]/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
             }
