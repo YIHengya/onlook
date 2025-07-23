@@ -1,5 +1,5 @@
 {
-  "id": "f14db045-cd43-47f9-bd54-d976608704a6",
+  "id": "65e43a14-1d2e-491f-adf1-c073e34f71c8",
   "prevId": "00708cb9-76b7-47b9-ba22-6bf72b1b872d",
   "version": "7",
   "dialect": "postgresql",
@@ -1096,15 +1096,7 @@
       "indexes": {},
       "foreignKeys": {},
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {
-        "legacy_subscriptions_email_unique": {
-          "name": "legacy_subscriptions_email_unique",
-          "nullsNotDistinct": false,
-          "columns": [
-            "email"
-          ]
-        }
-      },
+      "uniqueConstraints": {},
       "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": true
@@ -1274,7 +1266,8 @@
           "name": "status",
           "type": "subscription_status",
           "primaryKey": false,
-          "notNull": true
+          "notNull": true,
+          "default": "'active'"
         },
         "stripe_customer_id": {
           "name": "stripe_customer_id",
@@ -1919,7 +1912,9 @@
       ]
     }
   },
-  "schemas": {},
+  "schemas": {
+    "auth": "auth"
+  },
   "sequences": {},
   "roles": {},
   "policies": {},
