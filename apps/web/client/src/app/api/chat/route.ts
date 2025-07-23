@@ -93,7 +93,7 @@ export const streamResponse = async (req: NextRequest) => {
     const { messages, maxSteps, chatType } = await req.json();
     const { model, providerOptions } = await initModel({
         provider: LLMProvider.GOOGLE_AI_STUDIO,
-        model: GEMINI_MODELS.GEMINI_2_5_PRO
+        model: GEMINI_MODELS.GEMINI_2_5_FLASH
     });
 
     let systemPrompt: string;
